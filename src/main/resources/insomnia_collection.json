@@ -1,0 +1,373 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-02-02T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v9.0.0",
+  "resources": [
+    {
+      "_id": "req_get_all",
+      "parentId": "fld_notes",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "url": "http://localhost:8080/api/notes",
+      "name": "Get All Notes",
+      "description": "Lista todas as notas disponíveis",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1706486400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_search",
+      "parentId": "fld_notes",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "url": "http://localhost:8080/api/notes?title=Spring",
+      "name": "Search Notes by Title",
+      "description": "Busca notas pelo título",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_1",
+          "name": "title",
+          "value": "Spring",
+          "description": "Search term for note title (case-insensitive)",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1706486400001,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_by_id",
+      "parentId": "fld_notes",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "url": "http://localhost:8080/api/notes/1",
+      "name": "Get Note by ID",
+      "description": "Busca uma nota específica pelo ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1706486400002,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_create",
+      "parentId": "fld_notes",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "url": "http://localhost:8080/api/notes",
+      "name": "Create Note",
+      "description": "Cria uma nova nota",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Minha Primeira Nota\",\n  \"content\": \"Este é o conteúdo da minha nota de exemplo\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1706486400003,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_update",
+      "parentId": "fld_notes",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "url": "http://localhost:8080/api/notes/1",
+      "name": "Update Note",
+      "description": "Atualiza uma nota existente",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Título Atualizado\",\n  \"content\": \"Conteúdo atualizado da nota\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1706486400004,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete",
+      "parentId": "fld_notes",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "url": "http://localhost:8080/api/notes/1",
+      "name": "Delete Note",
+      "description": "Remove uma nota pelo ID",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1706486400005,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_7",
+      "parentId": "fld_examples",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "url": "{{ _.baseUrl }}/api/notes",
+      "name": "Create Note - Minimal",
+      "description": "Create a note with only the required title field",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Título Obrigatório\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1706486400006,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_8",
+      "parentId": "fld_examples",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "url": "{{ _.baseUrl }}/api/notes",
+      "name": "Create Note - Complete",
+      "description": "Create a note with both title and content",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Spring Boot Tutorial\",\n  \"content\": \"Spring Boot é um framework Java que facilita a criação de aplicações standalone e production-ready. Este tutorial cobre os conceitos básicos, incluindo:\\n\\n1. Configuração do projeto\\n2. Criação de REST APIs\\n3. Integração com banco de dados\\n4. Validação de dados\\n5. Tratamento de exceções\\n\\nPara mais informações, visite: https://spring.io/projects/spring-boot\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1706486400007,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_9",
+      "parentId": "fld_examples",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "url": "{{ _.baseUrl }}/api/notes/1",
+      "name": "Update Note - Partial",
+      "description": "Update only the title of a note",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Novo Título\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1706486400008,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_10",
+      "parentId": "fld_examples",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "url": "{{ _.baseUrl }}/api/notes",
+      "name": "Validation Error Example",
+      "description": "Example of validation error - title cannot be blank",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"\",\n  \"content\": \"Conteúdo sem título\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1706486400009,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_11",
+      "parentId": "fld_examples",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "url": "{{ _.baseUrl }}/api/notes/99999",
+      "name": "Not Found Example",
+      "description": "Example of 404 Not Found error",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1706486400010,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_notes",
+      "parentId": "wrk_main",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "name": "Notes",
+      "description": "Operations for managing notes",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1706486400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_examples",
+      "parentId": "wrk_main",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "name": "Examples",
+      "description": "Example requests demonstrating various scenarios",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1706486400001,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "name": "Notes API",
+      "description": "Complete API collection for Notes API - REST API for managing notes",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_main",
+      "modified": 1706832000000,
+      "created": 1706832000000,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1706832000000,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_cookies",
+      "parentId": "wrk_main",
+      "modified": 1706486400000,
+      "created": 1706486400000,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    }
+  ]
+}

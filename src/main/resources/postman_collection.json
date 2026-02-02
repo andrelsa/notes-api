@@ -1,0 +1,249 @@
+{
+  "info": {
+    "name": "Notes API",
+    "description": "Complete API collection for Notes API - REST API for managing notes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "noteId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "Get All Notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            },
+            "description": "Retrieve all notes from the database"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Notes by Title",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes?title=Spring",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Spring",
+                  "description": "Search term for note title (case-insensitive)"
+                }
+              ]
+            },
+            "description": "Search notes by title (case-insensitive partial match)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Note by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "{{noteId}}"]
+            },
+            "description": "Retrieve a specific note by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Minha Primeira Nota\",\n  \"content\": \"Este é o conteúdo da minha nota de exemplo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            },
+            "description": "Create a new note. Title is required, content is optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Note",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Título Atualizado\",\n  \"content\": \"Conteúdo atualizado da nota\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "{{noteId}}"]
+            },
+            "description": "Update an existing note. Both title and content are optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Note",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "{{noteId}}"]
+            },
+            "description": "Delete a note by its ID"
+          },
+          "response": []
+        }
+      ],
+      "description": "Operations for managing notes"
+    },
+    {
+      "name": "Examples",
+      "item": [
+        {
+          "name": "Create Note - Minimal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Título Obrigatório\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            },
+            "description": "Create a note with only the required title field"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Note - Complete",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Spring Boot Tutorial\",\n  \"content\": \"Spring Boot é um framework Java que facilita a criação de aplicações standalone e production-ready. Este tutorial cobre os conceitos básicos, incluindo:\n\n1. Configuração do projeto\n2. Criação de REST APIs\n3. Integração com banco de dados\n4. Validação de dados\n5. Tratamento de exceções\n\nPara mais informações, visite: https://spring.io/projects/spring-boot\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            },
+            "description": "Create a note with both title and content"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Note - Partial",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Novo Título\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "1"]
+            },
+            "description": "Update only the title of a note"
+          },
+          "response": []
+        },
+        {
+          "name": "Validation Error Example",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"content\": \"Conteúdo sem título\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"]
+            },
+            "description": "Example of validation error - title cannot be blank"
+          },
+          "response": []
+        },
+        {
+          "name": "Not Found Example",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notes/99999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes", "99999"]
+            },
+            "description": "Example of 404 Not Found error"
+          },
+          "response": []
+        }
+      ],
+      "description": "Example requests demonstrating various scenarios"
+    }
+  ]
+}

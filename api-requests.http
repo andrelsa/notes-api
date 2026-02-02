@@ -1,0 +1,104 @@
+### Notes API - HTTP Requests Collection
+### Base URL: http://localhost:8080
+
+### 1. Listar todas as notas
+GET http://localhost:8080/api/notes
+Accept: application/json
+
+###
+
+### 2. Buscar nota por ID
+GET http://localhost:8080/api/notes/1
+Accept: application/json
+
+###
+
+### 3. Buscar notas por título
+GET http://localhost:8080/api/notes?title=Spring
+Accept: application/json
+
+###
+
+### 4. Criar uma nova nota
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "title": "Minha Nova Nota",
+  "content": "Este é o conteúdo da minha nova nota. Aqui posso adicionar qualquer informação que desejar."
+}
+
+###
+
+### 5. Criar nota sem conteúdo (apenas título)
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "title": "Nota Rápida"
+}
+
+###
+
+### 6. Atualizar uma nota existente
+PUT http://localhost:8080/api/notes/1
+Content-Type: application/json
+
+{
+  "title": "Título Atualizado",
+  "content": "Conteúdo completamente atualizado da nota."
+}
+
+###
+
+### 7. Atualizar apenas o título de uma nota
+PUT http://localhost:8080/api/notes/1
+Content-Type: application/json
+
+{
+  "title": "Novo Título"
+}
+
+###
+
+### 8. Atualizar apenas o conteúdo de uma nota
+PUT http://localhost:8080/api/notes/1
+Content-Type: application/json
+
+{
+  "content": "Novo conteúdo mantendo o título anterior"
+}
+
+###
+
+### 9. Excluir uma nota
+DELETE http://localhost:8080/api/notes/1
+
+###
+
+### 10. Testar erro - Buscar nota inexistente
+GET http://localhost:8080/api/notes/999
+Accept: application/json
+
+###
+
+### 11. Testar validação - Criar nota sem título (deve falhar)
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "content": "Nota sem título"
+}
+
+###
+
+### 12. Testar validação - Criar nota com título vazio (deve falhar)
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": "Tentando criar nota com título vazio"
+}
+
+###

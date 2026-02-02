@@ -1,0 +1,27 @@
+# Build output
+build/
+target/
+.gradle/
+*.class
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# Test reports
+*.log
