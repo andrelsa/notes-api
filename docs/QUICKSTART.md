@@ -1,5 +1,9 @@
 # 🚀 Quick Start - Notes API
 
+> **📚 Documentação Completa**: Para informações detalhadas sobre arquitetura, padrões e desenvolvimento, consulte:
+> - 🤖 [LLM_KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md) - Base de conhecimento para LLMs
+> - 📖 [README.md](../README.md) - Visão geral do projeto
+
 ## ⚡ Início Rápido (Recomendado)
 
 ### Opção 1: Script Automático 🎯
@@ -162,10 +166,10 @@ docker-compose exec postgres psql -U postgres -d notesdb
 \dt
 
 -- Ver estrutura da tabela
-\d note
+\d notes
 
 -- Ver dados
-SELECT * FROM note;
+SELECT * FROM notes;
 
 -- Sair
 \q
@@ -223,20 +227,32 @@ src/main/kotlin/dev/andresoares/
 
 ## 📚 Documentação Completa
 
-### Guias de Configuração
-- **[README.md](README.md)** - Visão geral do projeto
-- **[DOCKER.md](DOCKER.md)** - Guia completo de Docker
-- **[DOCKER_SETUP_GUIDE.md](DOCKER_SETUP_GUIDE.md)** - Configuração passo a passo
-- **[SCRIPTS_GUIDE.md](SCRIPTS_GUIDE.md)** - Guia dos scripts de automação
+### 📖 Documentação Disponível
 
-### Guias de Desenvolvimento
-- **[DESENVOLVIMENTO.md](DESENVOLVIMENTO.md)** - Guia de desenvolvimento
-- **[ARQUITETURA.md](ARQUITETURA.md)** - Diagramas e arquitetura
-- **[SETUP_COMPLETO.md](SETUP_COMPLETO.md)** - Detalhes da configuração
+**Principais:**
+- **[README.md](../README.md)** - Visão geral completa do projeto
+- **[KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md)** - Base de conhecimento para LLMs/Agentes
+- **[QUICKSTART.md](QUICKSTART.md)** - Este guia (início rápido)
 
-### APIs e Testes
-- **[api-requests.http](api-requests.http)** - Requisições HTTP prontas
-- **[API_COLLECTIONS_README.md](src/main/resources/API_COLLECTIONS_README.md)** - Collections Postman/Insomnia
+**API e Testes:**
+- **[api-requests.http](../api-requests.http)** - Requisições HTTP prontas para IntelliJ/VSCode
+
+💡 **Collections Postman/Insomnia**: Os arquivos `postman_collection.json` e `insomnia_collection.json` estão disponíveis em `src/main/resources/`
+
+### 📋 Documentação Planejada
+
+⚠️ **Nota**: Os documentos abaixo são mencionados no README.md mas podem ainda não existir no projeto.
+
+- **DOCKER.md** - Guia completo de Docker e Docker Compose
+- **DESENVOLVIMENTO.md** - Guia completo de desenvolvimento
+- **ARQUITETURA.md** - Diagramas e padrões arquiteturais
+- **ESTRUTURA.md** - Estrutura completa do projeto
+- **SETUP_COMPLETO.md** - Detalhes da configuração inicial
+- **CONCLUSAO.md** - Status final e resumo completo
+- **SCRIPTS_GUIDE.md** - Guia dos scripts de automação
+- **DOCKER_SETUP_GUIDE.md** - Configuração Docker passo a passo
+
+💡 **Dica**: Consulte sempre o README.md principal para ver quais documentos estão disponíveis.
 
 ---
 

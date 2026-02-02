@@ -4,15 +4,23 @@ API RESTful para gerenciamento de notas, desenvolvida com Kotlin, Spring Boot e 
 
 ## 📚 Documentação do Projeto
 
+### 📖 Disponível
+
+- 🤖 [**KNOWLEDGE_BASE.md**](docs/KNOWLEDGE_BASE.md) - Base de conhecimento para LLMs/Agentes
 - 📖 [**README.md**](README.md) - Este arquivo (visão geral)
+- 🚀 [**QUICKSTART.md**](docs/QUICKSTART.md) - Guia rápido de início
+
+### 📋 Planejado
+
+⚠️ **Nota**: Os documentos abaixo são planejados mas podem ainda não existir no projeto.
+
+- 🔌 [**API_COLLECTIONS_README.md**](src/main/resources/API_COLLECTIONS_README.md) - Guia das collections Postman/Insomnia
 - 🐳 [**DOCKER.md**](DOCKER.md) - Guia completo de Docker e Docker Compose
-- 🚀 [**QUICKSTART.md**](QUICKSTART.md) - Guia rápido de início
 - 👨‍💻 [**DESENVOLVIMENTO.md**](DESENVOLVIMENTO.md) - Guia completo de desenvolvimento
 - 🏗️ [**ARQUITETURA.md**](ARQUITETURA.md) - Diagramas e padrões arquiteturais
 - 📦 [**ESTRUTURA.md**](ESTRUTURA.md) - Estrutura completa do projeto
 - ✅ [**SETUP_COMPLETO.md**](SETUP_COMPLETO.md) - Detalhes da configuração inicial
 - 🎉 [**CONCLUSAO.md**](CONCLUSAO.md) - Status final e resumo completo
-- 🔌 [**API_COLLECTIONS_README.md**](src/main/resources/API_COLLECTIONS_README.md) - Guia das collections Postman/Insomnia
 
 ---
 
@@ -88,19 +96,30 @@ curl -X POST http://localhost:8080/api/notes \
 src/main/kotlin/dev/andresoares/
 ├── NotesApiApplication.kt        # Classe principal
 ├── config/
-│   └── WebConfig.kt              # Configurações CORS
+│   ├── WebConfig.kt              # Configurações CORS
+│   └── DataInitializer.kt        # Dados iniciais
 ├── controller/
 │   └── NoteController.kt         # Endpoints REST
 ├── dto/
-│   └── NoteDto.kt                # DTOs para requisições e respostas
+│   ├── NoteCreateRequest.kt      # DTO para criar nota
+│   ├── NoteUpdateRequest.kt      # DTO para atualizar nota
+│   └── NoteResponse.kt           # DTO de resposta
 ├── exception/
-│   └── GlobalExceptionHandler.kt # Tratamento global de exceções
+│   ├── BusinessException.kt      # Exceções de negócio
+│   ├── ValidationException.kt    # Exceções de validação
+│   ├── SecurityException.kt      # Exceções de segurança
+│   ├── InfrastructureException.kt # Exceções de infraestrutura
+│   ├── dto/
+│   │   └── ErrorResponse.kt      # DTO de erro padronizado
+│   └── handler/
+│       └── GlobalExceptionHandler.kt # Handler global
 ├── model/
 │   └── Note.kt                   # Entidade JPA
 ├── repository/
 │   └── NoteRepository.kt         # Repositório JPA
 └── service/
-    └── NoteService.kt            # Lógica de negócio
+    ├── NoteService.kt            # Interface do serviço
+    └── NoteServiceImpl.kt        # Implementação do serviço
 ```
 
 ## 🔧 Como Executar
@@ -158,7 +177,7 @@ src/main/kotlin/dev/andresoares/
 | `./restart.sh` | Reinicia containers |
 | `./validate-docker.sh` | Valida ambiente Docker |
 
-Para mais detalhes sobre os scripts, consulte [SCRIPTS_GUIDE.md](SCRIPTS_GUIDE.md).
+💡 **Dica**: Para detalhes completos sobre cada script, consulte [KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md) ou [QUICKSTART.md](docs/QUICKSTART.md).
 
 ## 📚 Endpoints da API
 
@@ -301,10 +320,10 @@ docker-compose exec postgres psql -U postgres -d notesdb
 \dt
 
 -- Ver estrutura da tabela
-\d note
+\d notes
 
 -- Ver dados
-SELECT * FROM note;
+SELECT * FROM notes;
 
 -- Sair
 \q
@@ -338,9 +357,10 @@ Collections prontas para importar e testar todas as APIs:
 
 - 📁 **postman_collection.json** - Collection para Postman
 - 📁 **insomnia_collection.json** - Collection para Insomnia
-- 📄 **API_COLLECTIONS_README.md** - Documentação completa das collections
 
 **Localização:** `src/main/resources/`
+
+💡 **Dica**: Para criar documentação das collections, veja exemplos em [KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md).
 
 ### Como Usar:
 1. **Postman**: Import → Selecione `postman_collection.json`
@@ -352,7 +372,6 @@ Ambas as collections incluem:
 - ✅ Variáveis de ambiente configuradas
 - ✅ Casos de teste para validação e erros
 
-Para mais detalhes, consulte o arquivo [API_COLLECTIONS_README.md](src/main/resources/API_COLLECTIONS_README.md)
 
 ---
 
