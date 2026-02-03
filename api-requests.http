@@ -2,25 +2,25 @@
 ### Base URL: http://localhost:8080
 
 ### 1. Listar todas as notas
-GET http://localhost:8080/api/notes
+GET http://localhost:8080/api/v1/notes
 Accept: application/json
 
 ###
 
 ### 2. Buscar nota por ID
-GET http://localhost:8080/api/notes/1
+GET http://localhost:8080/api/v1/notes/1
 Accept: application/json
 
 ###
 
 ### 3. Buscar notas por título
-GET http://localhost:8080/api/notes?title=Spring
+GET http://localhost:8080/api/v1/notes?title=Spring
 Accept: application/json
 
 ###
 
 ### 4. Criar uma nova nota
-POST http://localhost:8080/api/notes
+POST http://localhost:8080/api/v1/notes
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 ###
 
 ### 5. Criar nota sem conteúdo (apenas título)
-POST http://localhost:8080/api/notes
+POST http://localhost:8080/api/v1/notes
 Content-Type: application/json
 
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
 ###
 
 ### 6. Atualizar uma nota existente
-PUT http://localhost:8080/api/notes/1
+PUT http://localhost:8080/api/v1/notes/1
 Content-Type: application/json
 
 {
@@ -52,7 +52,7 @@ Content-Type: application/json
 ###
 
 ### 7. Atualizar apenas o título de uma nota
-PUT http://localhost:8080/api/notes/1
+PUT http://localhost:8080/api/v1/notes/1
 Content-Type: application/json
 
 {
@@ -62,7 +62,7 @@ Content-Type: application/json
 ###
 
 ### 8. Atualizar apenas o conteúdo de uma nota
-PUT http://localhost:8080/api/notes/1
+PUT http://localhost:8080/api/v1/notes/1
 Content-Type: application/json
 
 {
@@ -72,18 +72,18 @@ Content-Type: application/json
 ###
 
 ### 9. Excluir uma nota
-DELETE http://localhost:8080/api/notes/1
+DELETE http://localhost:8080/api/v1/notes/1
 
 ###
 
 ### 10. Testar erro - Buscar nota inexistente
-GET http://localhost:8080/api/notes/999
+GET http://localhost:8080/api/v1/notes/999
 Accept: application/json
 
 ###
 
 ### 11. Testar validação - Criar nota sem título (deve falhar)
-POST http://localhost:8080/api/notes
+POST http://localhost:8080/api/v1/notes
 Content-Type: application/json
 
 {
@@ -93,7 +93,7 @@ Content-Type: application/json
 ###
 
 ### 12. Testar validação - Criar nota com título vazio (deve falhar)
-POST http://localhost:8080/api/notes
+POST http://localhost:8080/api/v1/notes
 Content-Type: application/json
 
 {
@@ -102,3 +102,162 @@ Content-Type: application/json
 }
 
 ###
+
+### ===========================
+### USERS API ENDPOINTS
+### ===========================
+
+### 13. Listar todos os usuários
+GET http://localhost:8080/api/v1/users
+Accept: application/json
+
+###
+
+### 14. Buscar usuário por ID
+GET http://localhost:8080/api/v1/users/1
+Accept: application/json
+
+###
+
+### 15. Buscar usuários por nome
+GET http://localhost:8080/api/v1/users/search?name=João
+Accept: application/json
+
+###
+
+### 16. Criar um novo usuário
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "password": "senha123456"
+}
+
+###
+
+### 17. Criar usuário completo
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Maria Santos",
+  "email": "maria.santos@example.com",
+  "password": "senhaSegura123"
+}
+
+###
+
+### 18. Atualizar um usuário existente
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "João Silva Atualizado",
+  "email": "joao.silva.novo@example.com",
+  "password": "novaSenha123"
+}
+
+###
+
+### 19. Atualizar apenas o nome de um usuário
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "João da Silva"
+}
+
+###
+
+### 20. Atualizar apenas o email de um usuário
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "email": "novo.email@example.com"
+}
+
+###
+
+### 21. Excluir um usuário
+DELETE http://localhost:8080/api/v1/users/1
+
+###
+
+### 22. Testar erro - Buscar usuário inexistente
+GET http://localhost:8080/api/v1/users/999
+Accept: application/json
+
+###
+
+### 23. Testar validação - Email inválido (deve falhar)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Usuário Teste",
+  "email": "email-invalido",
+  "password": "senha123456"
+}
+
+###
+
+### 24. Testar validação - Senha muito curta (deve falhar)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Usuário Teste",
+  "email": "usuario@example.com",
+  "password": "1234567"
+}
+
+###
+
+### 25. Testar validação - Nome muito curto (deve falhar)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "AB",
+  "email": "usuario@example.com",
+  "password": "senha123456"
+}
+
+###
+
+### 26. Testar validação - Criar usuário sem nome (deve falhar)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "email": "sem.nome@example.com",
+  "password": "senha123456"
+}
+
+###
+
+### 27. Testar validação - Criar usuário sem email (deve falhar)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Usuário Sem Email",
+  "password": "senha123456"
+}
+
+###
+
+### 28. Testar validação - Criar usuário sem senha (deve falhar)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Usuário Sem Senha",
+  "email": "sem.senha@example.com"
+}
+
+###
+

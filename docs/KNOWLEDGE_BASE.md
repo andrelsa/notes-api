@@ -26,13 +26,25 @@
 API RESTful para gerenciamento de notas (Notes Management System), desenvolvida como aplicação backend moderna seguindo as melhores práticas de desenvolvimento.
 
 ### Domínio
-Sistema CRUD para gerenciamento de notas com funcionalidades de:
+Sistema CRUD para gerenciamento de notas e usuários com funcionalidades de:
+
+**Notes (Notas):**
 - Criar notas
 - Listar todas as notas
 - Buscar nota por ID
 - Buscar notas por título (search)
 - Atualizar notas
 - Excluir notas
+
+**Users (Usuários):**
+- Criar usuários
+- Listar todos os usuários
+- Buscar usuário por ID
+- Buscar usuários por nome (search)
+- Atualizar usuários
+- Excluir usuários
+
+**Recursos Comuns:**
 - Validação de dados
 - Tratamento de exceções customizadas
 
@@ -116,18 +128,26 @@ dev.andresoares/
 │   ├── WebConfig.kt                    # CORS, Web configs
 │   └── DataInitializer.kt              # Dados iniciais
 ├── controller/                         # REST Controllers
-│   └── NoteController.kt               # Endpoints de notas
+│   ├── NoteController.kt               # Endpoints de notas
+│   └── UserController.kt               # Endpoints de usuários
 ├── service/                            # Lógica de Negócio
-│   ├── NoteService.kt                  # Interface
-│   └── NoteServiceImpl.kt              # Implementação
+│   ├── NoteService.kt                  # Interface (Notas)
+│   ├── NoteServiceImpl.kt              # Implementação (Notas)
+│   ├── UserService.kt                  # Interface (Usuários)
+│   └── UserServiceImpl.kt              # Implementação (Usuários)
 ├── repository/                         # Acesso a Dados
-│   └── NoteRepository.kt               # Spring Data JPA
+│   ├── NoteRepository.kt               # Spring Data JPA (Notas)
+│   └── UserRepository.kt               # Spring Data JPA (Usuários)
 ├── model/                              # Entidades
-│   └── Note.kt                         # Entidade Note
+│   ├── Note.kt                         # Entidade Note
+│   └── User.kt                         # Entidade User
 ├── dto/                                # Data Transfer Objects
 │   ├── NoteCreateRequest.kt            # DTO para criar nota
 │   ├── NoteUpdateRequest.kt            # DTO para atualizar nota
-│   └── NoteResponse.kt                 # DTO de resposta
+│   ├── NoteResponse.kt                 # DTO de resposta (Nota)
+│   ├── UserCreateRequest.kt            # DTO para criar usuário
+│   ├── UserUpdateRequest.kt            # DTO para atualizar usuário
+│   └── UserResponse.kt                 # DTO de resposta (Usuário)
 └── exception/                          # Tratamento de Exceções
     ├── BusinessException.kt            # Exceções de negócio
     ├── ValidationException.kt          # Exceções de validação
@@ -192,7 +212,7 @@ data class NoteUpdateRequest(
     val content: String?
 )
 
-// DTO de resposta
+// DTO de resposta (Nota)
 data class NoteResponse(
     val id: Long,
     val title: String,
@@ -200,11 +220,55 @@ data class NoteResponse(
     val createdAt: String,  // String formatada (não LocalDateTime)
     val updatedAt: String   // String formatada (não LocalDateTime)
 )
+
+// DTO para criar usuário
+data class UserCreateRequest(
+    @field:NotNull(message = "Field 'name' is required and must be provided in the request body")
+    @field:NotBlank(message = "Field 'name' cannot be empty or blank")
+    @field:Size(min = 3, max = 255, message = "Field 'name' must be between 3 and 255 characters")
+    val name: String?,
+    
+    @field:NotNull(message = "Field 'email' is required and must be provided in the request body")
+    @field:NotBlank(message = "Field 'email' cannot be empty or blank")
+    @field:Email(message = "Invalid email format")
+    val email: String?,
+    
+    @field:NotNull(message = "Field 'password' is required and must be provided in the request body")
+    @field:NotBlank(message = "Field 'password' cannot be empty or blank")
+    @field:Size(min = 8, max = 15, message = "Field 'password' must be between 8 and 15 characters")
+    val password: String?
+)
+
+// DTO para atualizar usuário
+data class UserUpdateRequest(
+    @field:NotBlank(message = "Field 'name' cannot be empty or blank when provided")
+    @field:Size(min = 3, max = 255, message = "Field 'name' must be between 3 and 255 characters when provided")
+    val name: String?,
+    
+    @field:Email(message = "Invalid email format")
+    @field:NotBlank(message = "Field 'email' cannot be empty or blank when provided")
+    val email: String?,
+    
+    @field:NotBlank(message = "Field 'password' cannot be empty or blank when provided")
+    @field:Size(min = 8, max = 15, message = "Field 'password' must be between 8 and 15 characters when provided")
+    val password: String?
+)
+
+// DTO de resposta (Usuário)
+data class UserResponse(
+    val id: Long,
+    val name: String,
+    val email: String,
+    val createdAt: String,  // String formatada
+    val updatedAt: String   // String formatada
+)
 ```
 - Separação entre modelo de domínio e contratos de API
 - Validação em DTOs com mensagens customizadas
 - DTOs específicos para criar e atualizar (diferentes validações)
 - Response com timestamps formatados como String
+- Validação de email com @Email
+- Validação de tamanho para senha (8-15 caracteres)
 
 #### 4. **Global Exception Handling**
 ```kotlin
@@ -245,6 +309,43 @@ data class Note(
 
 **Características**:
 - ID auto-incrementado
+- Timestamps automáticos (createdAt, updatedAt)
+- Validação em nível de entidade
+- Hook `@PreUpdate` para atualizar updatedAt
+
+#### Entidade User
+```kotlin
+@Entity
+@Table(name = "users")
+data class User(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    
+    @NotBlank
+    @Column(nullable = false)
+    var name: String,
+    
+    @NotBlank
+    @Email
+    @Column(nullable = false, unique = true)
+    var email: String,
+    
+    @NotBlank
+    @Column(nullable = false)
+    var password: String,
+    
+    @Column(name = "created_at", nullable = false, updatable = false)
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    
+    @Column(name = "updated_at", nullable = false)
+    var updatedAt: LocalDateTime = LocalDateTime.now()
+)
+```
+
+**Características**:
+- ID auto-incrementado
+- Email único (constraint de banco de dados)
 - Timestamps automáticos (createdAt, updatedAt)
 - Validação em nível de entidade
 - Hook `@PreUpdate` para atualizar updatedAt
@@ -354,11 +455,13 @@ O projeto inclui collections prontas para testar a API:
 ```
 
 #### Funcionalidades Incluídas:
-- ✅ Todos os 6 endpoints da API
+- ✅ Todos os endpoints da API (Notes e Users)
 - ✅ Exemplos prontos para usar
 - ✅ Variáveis de ambiente configuradas
 - ✅ Casos de teste para validação
 - ✅ Casos de erro (404, 400)
+- ✅ Validações de email, senha e nome
+- ✅ Exemplos de atualização parcial
 
 ### Arquivo HTTP para IntelliJ/VSCode
 
@@ -368,10 +471,13 @@ O projeto também inclui um arquivo HTTP com exemplos de requisições que pode 
 
 ```http
 ### Listar todas as notas
-GET http://localhost:8080/api/notes
+GET http://localhost:8080/api/v1/notes
+
+### Buscar notas por título
+GET http://localhost:8080/api/v1/notes?title=exemplo
 
 ### Criar nota
-POST http://localhost:8080/api/notes
+POST http://localhost:8080/api/v1/notes
 Content-Type: application/json
 
 {
@@ -380,19 +486,52 @@ Content-Type: application/json
 }
 
 ### Buscar por ID
-GET http://localhost:8080/api/notes/1
+GET http://localhost:8080/api/v1/notes/1
 
-### Atualizar nota
-PUT http://localhost:8080/api/notes/1
+### Atualizar nota (parcial)
+PATCH http://localhost:8080/api/v1/notes/1
 Content-Type: application/json
 
 {
-  "title": "Título Atualizado",
-  "content": "Conteúdo Atualizado"
+  "title": "Título Atualizado"
 }
 
 ### Deletar nota
-DELETE http://localhost:8080/api/notes/1
+DELETE http://localhost:8080/api/v1/notes/1
+
+### ===========================
+### USERS API ENDPOINTS
+### ===========================
+
+### Listar todos os usuários
+GET http://localhost:8080/api/v1/users
+
+### Buscar usuários por nome
+GET http://localhost:8080/api/v1/users?name=João
+
+### Criar usuário
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "password": "senha123456"
+}
+
+### Buscar usuário por ID
+GET http://localhost:8080/api/v1/users/1
+
+### Atualizar usuário (parcial)
+PATCH http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "João Silva Atualizado"
+}
+
+### Deletar usuário
+DELETE http://localhost:8080/api/v1/users/1
 ```
 
 **Vantagem**: Execução rápida sem sair da IDE.
@@ -478,7 +617,8 @@ services:
 
 | Serviço | URL | Credenciais |
 |---------|-----|-------------|
-| API | http://localhost:8080/api/notes | - |
+| API - Notes | http://localhost:8080/api/v1/notes | - |
+| API - Users | http://localhost:8080/api/v1/users | - |
 | PostgreSQL | localhost:5432 | postgres/postgres |
 | pgAdmin | http://localhost:5050 | admin@notesapi.com/admin |
 
@@ -613,14 +753,41 @@ fun createNote(@Valid @RequestBody request: NoteCreateRequest): ResponseEntity<N
 ### REST API Conventions
 
 #### Endpoints
+
+**Notes:**
 ```
-GET    /api/notes              # Listar todas
-GET    /api/notes?title=search # Buscar por título
-GET    /api/notes/{id}         # Buscar por ID
-POST   /api/notes              # Criar
-PUT    /api/notes/{id}         # Atualizar
-DELETE /api/notes/{id}         # Deletar
+GET    /api/v1/notes              # Listar todas
+GET    /api/v1/notes?title=search # Buscar por título
+GET    /api/v1/notes/{id}         # Buscar por ID
+POST   /api/v1/notes              # Criar
+PATCH  /api/v1/notes/{id}         # Atualizar (parcial)
+DELETE /api/v1/notes/{id}         # Deletar
 ```
+
+**Users:**
+```
+GET    /api/v1/users              # Listar todos
+GET    /api/v1/users?name=search  # Buscar por nome
+GET    /api/v1/users/{id}         # Buscar por ID
+POST   /api/v1/users              # Criar
+PATCH  /api/v1/users/{id}         # Atualizar (parcial)
+DELETE /api/v1/users/{id}         # Deletar
+```
+
+#### Melhorias RESTful Implementadas
+
+**✅ Versionamento da API:**
+- URLs com prefixo `/api/v1/`
+- Facilita mudanças futuras sem quebrar clientes existentes
+
+**✅ Endpoints de Busca Unificados:**
+- Query parameters opcionais no endpoint principal
+- `GET /api/v1/notes?title=exemplo` ao invés de `/api/v1/notes/search?title=exemplo`
+- Padrão REST mais limpo e semântico
+
+**✅ PATCH para Atualização Parcial:**
+- Uso correto de `PATCH` para atualizações parciais
+- Campos opcionais no DTO de atualização
 
 #### Status Codes
 - `200 OK`: GET, PUT bem-sucedidos
@@ -1048,8 +1215,30 @@ docker exec -it notesdb-postgres psql -U postgres -d notesdb
 
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|-------|
+| 2026-02-03 | 1.3.0 | Melhorias RESTful: versionamento, endpoints unificados, PATCH | Sistema |
+| 2026-02-03 | 1.2.0 | Adição de endpoints e documentação de Users | Sistema |
 | 2026-02-02 | 1.1.0 | Atualização completa com informações do projeto real | Sistema |
 | 2026-02-02 | 1.0.0 | Criação inicial do documento | Sistema |
+
+**Principais mudanças na v1.3.0:**
+- ✅ **Versionamento da API**: URLs com `/api/v1/`
+- ✅ **Endpoints de busca unificados**: Query params no endpoint principal
+  - `GET /api/v1/notes?title=xxx` ao invés de `/api/v1/notes/search?title=xxx`
+  - `GET /api/v1/users?name=xxx` ao invés de `/api/v1/users/search?name=xxx`
+- ✅ **PATCH para atualizações parciais**: Uso correto de `PATCH` ao invés de `PUT`
+- ✅ **Collections atualizadas**: Insomnia, Postman e HTTP file
+- ✅ **Testes atualizados**: Todos os testes passando com as novas URLs
+- ✅ **Conformidade RESTful**: API mais aderente aos padrões REST
+
+**Principais mudanças na v1.2.0:**
+- ✅ Adicionados todos os endpoints de Users (/api/users)
+- ✅ Documentação completa de UserController, UserService, UserRepository
+- ✅ DTOs de usuários (UserCreateRequest, UserUpdateRequest, UserResponse)
+- ✅ Validações específicas para usuários (email, senha 8-15 chars, nome min 3 chars)
+- ✅ Collections Postman e Insomnia atualizadas com endpoints de usuários
+- ✅ Arquivo api-requests.http atualizado com 16 novos exemplos de usuários
+- ✅ Exemplos de validação (email inválido, senha curta, nome curto)
+- ✅ Entidade User documentada com constraints (email único)
 
 **Principais mudanças na v1.1.0:**
 - ✅ Estrutura de pacotes atualizada (exception/handler, exception/dto)
@@ -1072,4 +1261,4 @@ Este documento é a **fonte única de verdade** para agentes LLM trabalhando nes
 
 ---
 
-*Última atualização: 2026-02-02 | Versão 1.1.0*
+*Última atualização: 2026-02-03 | Versão 1.3.0*

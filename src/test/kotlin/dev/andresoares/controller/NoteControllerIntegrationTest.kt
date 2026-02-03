@@ -3,6 +3,8 @@ package dev.andresoares.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.andresoares.dto.NoteCreateRequest
 import dev.andresoares.dto.NoteUpdateRequest
+import dev.andresoares.repository.NoteRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -22,6 +24,15 @@ class NoteControllerIntegrationTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
+    @Autowired
+    private lateinit var noteRepository: NoteRepository
+
+    @BeforeEach
+    fun setUp() {
+        // Limpa o banco de dados antes de cada teste
+        noteRepository.deleteAll()
+    }
+
     @Test
     fun `should create and retrieve a note`() {
         val createRequest = NoteCreateRequest(
@@ -31,7 +42,7 @@ class NoteControllerIntegrationTest {
 
         // Create note
         val createResult = mockMvc.perform(
-            post("/api/notes")
+            post("/api/v1/notes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -44,7 +55,7 @@ class NoteControllerIntegrationTest {
         val noteId = response.get("id").asLong()
 
         // Retrieve note
-        mockMvc.perform(get("/api/notes/$noteId"))
+        mockMvc.perform(get("/api/v1/notes/$noteId"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(noteId))
             .andExpect(jsonPath("$.title").value("Test Note"))
@@ -59,7 +70,7 @@ class NoteControllerIntegrationTest {
 
         // Create note
         val createResult = mockMvc.perform(
-            post("/api/notes")
+            post("/api/v1/notes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -76,7 +87,7 @@ class NoteControllerIntegrationTest {
 
         // Update note
         mockMvc.perform(
-            put("/api/notes/$noteId")
+            patch("/api/v1/notes/$noteId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
@@ -94,7 +105,7 @@ class NoteControllerIntegrationTest {
 
         // Create note
         val createResult = mockMvc.perform(
-            post("/api/notes")
+            post("/api/v1/notes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -105,11 +116,11 @@ class NoteControllerIntegrationTest {
         val noteId = response.get("id").asLong()
 
         // Delete note
-        mockMvc.perform(delete("/api/notes/$noteId"))
+        mockMvc.perform(delete("/api/v1/notes/$noteId"))
             .andExpect(status().isNoContent)
 
         // Verify note is deleted
-        mockMvc.perform(get("/api/notes/$noteId"))
+        mockMvc.perform(get("/api/v1/notes/$noteId"))
             .andExpect(status().isNotFound)
     }
 
@@ -118,12 +129,14 @@ class NoteControllerIntegrationTest {
         val createRequest = mapOf("title" to "", "content" to "Content")
 
         mockMvc.perform(
-            post("/api/notes")
+            post("/api/v1/notes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
             .andExpect(status().isBadRequest)
-            .andExpect(jsonPath("$.error").value("Validation Failed"))
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.message").exists())
+            .andExpect(jsonPath("$.validationErrors").exists())
     }
 
     @Test
@@ -135,14 +148,14 @@ class NoteControllerIntegrationTest {
 
         listOf(note1, note2, note3).forEach { request ->
             mockMvc.perform(
-                post("/api/notes")
+                post("/api/v1/notes")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request))
             )
         }
 
         // Search for notes with "Spring" in title
-        mockMvc.perform(get("/api/notes?title=Spring"))
+        mockMvc.perform(get("/api/v1/notes?title=Spring"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
     }

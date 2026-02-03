@@ -8,20 +8,18 @@ data class NoteCreateRequest(
     @field:NotNull(message = "Field 'title' is required and must be provided in the request body")
     @field:NotBlank(message = "Field 'title' cannot be empty or blank")
     @field:Size(min = 1, max = 255, message = "Field 'title' must be between 1 and 255 characters")
-    val title: String?,
+    var title: String?,
 
     @field:NotNull(message = "Field 'content' is required and must be provided in the request body")
     @field:NotBlank(message = "Field 'content' cannot be empty or blank")
     @field:Size(min = 1, max = 5000, message = "Field 'content' must be between 1 and 5000 characters")
-    val content: String?
+    var content: String?
 )
 
 data class NoteUpdateRequest(
-    @field:NotBlank(message = "Field 'title' cannot be empty or blank when provided")
     @field:Size(min = 1, max = 255, message = "Field 'title' must be between 1 and 255 characters when provided")
     val title: String?,
 
-    @field:NotBlank(message = "Field 'content' cannot be empty or blank when provided")
     @field:Size(min = 1, max = 5000, message = "Field 'content' must be between 1 and 5000 characters when provided")
     val content: String?
 )

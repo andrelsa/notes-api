@@ -1,4 +1,4 @@
-package dev.andresoares.service
+package dev.andresoares.dev.andresoares.service.impl
 
 import dev.andresoares.dto.NoteCreateRequest
 import dev.andresoares.dto.NoteResponse
@@ -6,6 +6,7 @@ import dev.andresoares.dto.NoteUpdateRequest
 import dev.andresoares.exception.ResourceNotFoundException
 import dev.andresoares.model.Note
 import dev.andresoares.repository.NoteRepository
+import dev.andresoares.service.NoteService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -65,4 +66,3 @@ class NoteServiceImpl(private val noteRepository: NoteRepository) : NoteService 
         updatedAt = updatedAt.toString()
     )
 }
-
