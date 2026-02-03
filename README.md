@@ -5,6 +5,7 @@ API RESTful para gerenciamento de notas, desenvolvida com Kotlin, Spring Boot e 
 ## 📚 Documentação do Projeto
 
 - 📖 [**README.md**](README.md) - Este arquivo (visão geral)
+- 🔄 [**RESTFUL_API.md**](RESTFUL_API.md) - Explicação sobre APIs RESTful e análise de aderência do projeto
 - 🐳 [**DOCKER.md**](DOCKER.md) - Guia completo de Docker e Docker Compose
 - 🚀 [**QUICKSTART.md**](QUICKSTART.md) - Guia rápido de início
 - 👨‍💻 [**DESENVOLVIMENTO.md**](DESENVOLVIMENTO.md) - Guia completo de desenvolvimento
