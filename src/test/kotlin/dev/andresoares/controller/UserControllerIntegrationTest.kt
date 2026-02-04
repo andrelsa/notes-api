@@ -43,7 +43,7 @@ class UserControllerIntegrationTest {
 
         // Create user
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -56,7 +56,7 @@ class UserControllerIntegrationTest {
         val userId = response.get("id").asLong()
 
         // Retrieve user
-        mockMvc.perform(get("/api/users/$userId"))
+        mockMvc.perform(get("/api/v1/users/$userId"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(userId))
             .andExpect(jsonPath("$.name").value("João Silva"))
@@ -73,7 +73,7 @@ class UserControllerIntegrationTest {
 
         // Create user
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -91,7 +91,7 @@ class UserControllerIntegrationTest {
 
         // Update user
         mockMvc.perform(
-            patch("/api/users/$userId")
+            patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
@@ -110,7 +110,7 @@ class UserControllerIntegrationTest {
 
         // Create user
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -124,7 +124,7 @@ class UserControllerIntegrationTest {
 
         // Update user - only name
         mockMvc.perform(
-            patch("/api/users/$userId")
+            patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
@@ -143,7 +143,7 @@ class UserControllerIntegrationTest {
 
         // Create user
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -157,7 +157,7 @@ class UserControllerIntegrationTest {
 
         // Update user - only email
         mockMvc.perform(
-            patch("/api/users/$userId")
+            patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
@@ -176,7 +176,7 @@ class UserControllerIntegrationTest {
 
         // Create user
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -190,7 +190,7 @@ class UserControllerIntegrationTest {
 
         // Update user - only password
         mockMvc.perform(
-            patch("/api/users/$userId")
+            patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
@@ -209,7 +209,7 @@ class UserControllerIntegrationTest {
 
         // Create user
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -220,11 +220,11 @@ class UserControllerIntegrationTest {
         val userId = response.get("id").asLong()
 
         // Delete user
-        mockMvc.perform(delete("/api/users/$userId"))
+        mockMvc.perform(delete("/api/v1/users/$userId"))
             .andExpect(status().isNoContent)
 
         // Verify user is deleted
-        mockMvc.perform(get("/api/users/$userId"))
+        mockMvc.perform(get("/api/v1/users/$userId"))
             .andExpect(status().isNotFound)
     }
 
@@ -237,7 +237,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -256,7 +256,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -274,7 +274,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -292,7 +292,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -310,14 +310,14 @@ class UserControllerIntegrationTest {
 
         listOf(user1, user2, user3).forEach { request ->
             mockMvc.perform(
-                post("/api/users")
+                post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request))
             )
         }
 
         // Search for users with "João" in name
-        mockMvc.perform(get("/api/users?name=João"))
+        mockMvc.perform(get("/api/v1/users?name=João"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
     }
@@ -327,13 +327,13 @@ class UserControllerIntegrationTest {
         // Create test user
         val user = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user))
         )
 
         // Search for non-existent name
-        mockMvc.perform(get("/api/users?name=Inexistente"))
+        mockMvc.perform(get("/api/v1/users?name=Inexistente"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(0))
     }
@@ -346,14 +346,14 @@ class UserControllerIntegrationTest {
 
         listOf(user1, user2).forEach { request ->
             mockMvc.perform(
-                post("/api/users")
+                post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request))
             )
         }
 
         // List all users (retorna Page)
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get("/api/v1/users"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.content").isArray)
             .andExpect(jsonPath("$.content.length()").value(2))
@@ -372,7 +372,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -390,7 +390,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -408,7 +408,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -426,7 +426,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -444,7 +444,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -462,7 +462,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -480,7 +480,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -498,7 +498,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -519,7 +519,7 @@ class UserControllerIntegrationTest {
             )
 
             mockMvc.perform(
-                post("/api/users")
+                post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(createRequest))
             )
@@ -536,7 +536,7 @@ class UserControllerIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -555,7 +555,7 @@ class UserControllerIntegrationTest {
         )
 
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -569,7 +569,7 @@ class UserControllerIntegrationTest {
         val updateRequest = mapOf("password" to "Abc #123def")
 
         mockMvc.perform(
-            patch("/api/users/$userId")
+            patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
@@ -588,7 +588,7 @@ class UserControllerIntegrationTest {
         )
 
         val createResult = mockMvc.perform(
-            post("/api/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest))
         )
@@ -602,7 +602,7 @@ class UserControllerIntegrationTest {
         val updateRequest = mapOf("password" to "Abc123def")
 
         mockMvc.perform(
-            patch("/api/users/$userId")
+            patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
