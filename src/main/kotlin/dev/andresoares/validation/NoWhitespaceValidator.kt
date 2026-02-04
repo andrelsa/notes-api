@@ -3,7 +3,7 @@ package dev.andresoares.validation
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
-class NoWhiteSpaceValidator : ConstraintValidator<NoWhitespace, String> {
+class NoWhitespaceValidator : ConstraintValidator<NoWhitespace, String> {
 
     override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
         if (value.isNullOrBlank()) {
