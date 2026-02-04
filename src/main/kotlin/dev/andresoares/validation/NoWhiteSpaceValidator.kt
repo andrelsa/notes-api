@@ -6,8 +6,8 @@ import jakarta.validation.ConstraintValidatorContext
 class NoWhiteSpaceValidator : ConstraintValidator<NoWhitespace, String> {
 
     override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
-        if (value.isNullOrBlank()) {
-            return true // @NotBlank já valida isso
+        if (value == null) {
+            return true // Constraint validation should not be applied to null values.
         }
 
         // Verifica se contém qualquer espaço em branco
