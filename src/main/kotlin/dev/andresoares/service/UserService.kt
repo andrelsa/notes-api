@@ -1,8 +1,8 @@
-package dev.andresoares.dev.andresoares.service
+package dev.andresoares.service
 
-import dev.andresoares.dev.andresoares.dto.UserCreateRequest
-import dev.andresoares.dev.andresoares.dto.UserResponse
-import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.dto.UserCreateRequest
+import dev.andresoares.dto.UserResponse
+import dev.andresoares.dto.UserUpdateRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
