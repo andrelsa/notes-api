@@ -1,10 +1,9 @@
 package dev.andresoares.controller
 
-import dev.andresoares.dev.andresoares.controller.UserController
-import dev.andresoares.dev.andresoares.dto.UserCreateRequest
-import dev.andresoares.dev.andresoares.dto.UserResponse
-import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
-import dev.andresoares.dev.andresoares.service.UserService
+import dev.andresoares.dto.UserCreateRequest
+import dev.andresoares.dto.UserResponse
+import dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.service.UserService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
