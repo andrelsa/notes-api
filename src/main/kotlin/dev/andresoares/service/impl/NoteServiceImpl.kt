@@ -1,4 +1,4 @@
-package dev.andresoares.dev.andresoares.service.impl
+package dev.andresoares.service.impl
 
 import dev.andresoares.dto.NoteCreateRequest
 import dev.andresoares.dto.NoteResponse
