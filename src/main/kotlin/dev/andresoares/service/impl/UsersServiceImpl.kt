@@ -1,11 +1,11 @@
-package dev.andresoares.dev.andresoares.service.impl
+package dev.andresoares.service.impl
 
-import dev.andresoares.dev.andresoares.dto.UserCreateRequest
-import dev.andresoares.dev.andresoares.dto.UserResponse
-import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
-import dev.andresoares.dev.andresoares.model.User
-import dev.andresoares.dev.andresoares.repository.UserRepository
-import dev.andresoares.dev.andresoares.service.UserService
+import dev.andresoares.dto.UserCreateRequest
+import dev.andresoares.dto.UserResponse
+import dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.model.User
+import dev.andresoares.repository.UserRepository
+import dev.andresoares.service.UserService
 import dev.andresoares.exception.ResourceNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
