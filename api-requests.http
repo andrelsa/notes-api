@@ -198,7 +198,7 @@ Content-Type: application/json
 ###
 
 ### 18. Atualizar um usuário existente
-PUT http://localhost:8080/api/v1/users/1
+PATCH http://localhost:8080/api/v1/users/1
 Content-Type: application/json
 
 {
@@ -210,7 +210,7 @@ Content-Type: application/json
 ###
 
 ### 19. Atualizar apenas o nome de um usuário
-PUT http://localhost:8080/api/v1/users/1
+PATCH http://localhost:8080/api/v1/users/1
 Content-Type: application/json
 
 {
@@ -220,7 +220,7 @@ Content-Type: application/json
 ###
 
 ### 20. Atualizar apenas o email de um usuário
-PUT http://localhost:8080/api/v1/users/1
+PATCH http://localhost:8080/api/v1/users/1
 Content-Type: application/json
 
 {
