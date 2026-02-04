@@ -1,9 +1,9 @@
-package dev.andresoares.dev.andresoares.controller
+package dev.andresoares.controller
 
-import dev.andresoares.dev.andresoares.dto.UserCreateRequest
-import dev.andresoares.dev.andresoares.dto.UserResponse
-import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
-import dev.andresoares.dev.andresoares.service.UserService
+import dev.andresoares.dto.UserCreateRequest
+import dev.andresoares.dto.UserResponse
+import dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.service.UserService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
