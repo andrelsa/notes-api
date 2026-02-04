@@ -3,6 +3,8 @@ package dev.andresoares.service
 import dev.andresoares.dto.NoteCreateRequest
 import dev.andresoares.dto.NoteResponse
 import dev.andresoares.dto.NoteUpdateRequest
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 /**
  * Interface que define o contrato para operações de serviço relacionadas a Notes.
@@ -20,6 +22,15 @@ interface NoteService {
      * @return Lista de todas as notas em formato DTO
      */
     fun getAllNotes(): List<NoteResponse>
+
+    /**
+     * Retorna todas as notas com paginação e ordenação.
+     * @param pageable Configurações de paginação e ordenação
+     * @return Página de notas em formato DTO
+     */
+    fun getAllNotes(pageable: Pageable): Page<NoteResponse>
+
+    // ...existing code...
 
     /**
      * Busca uma nota específica por ID.

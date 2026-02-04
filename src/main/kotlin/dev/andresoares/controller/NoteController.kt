@@ -5,30 +5,40 @@ import dev.andresoares.dto.NoteResponse
 import dev.andresoares.dto.NoteUpdateRequest
 import dev.andresoares.service.NoteService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/notes")
+@RequestMapping("/api/v1/notes")
 class NoteController(private val noteService: NoteService) {
 
     @GetMapping
-    fun getAllNotes(@RequestParam(required = false) title: String?): ResponseEntity<List<NoteResponse>> {
-        val notes = if (title != null) {
-            noteService.searchNotesByTitle(title)
-        } else {
-            noteService.getAllNotes()
+    fun getAllNotes(
+        @RequestParam(required = false) title: String?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "id") sortBy: String,
+        @RequestParam(defaultValue = "asc") direction: String
+    ): ResponseEntity<*> {
+        // Se há filtro de título, retorna lista sem paginação
+        if (title != null) {
+            val notes = noteService.searchNotesByTitle(title)
+            return ResponseEntity.ok(notes)
         }
-        return ResponseEntity.ok(notes)
+
+        // Sem filtro, retorna com paginação
+        val sortDirection = if (direction.equals("desc", ignoreCase = true)) {
+            Sort.Direction.DESC
+        } else {
+            Sort.Direction.ASC
+        }
+        val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy))
+        val notesPage: Page<NoteResponse> = noteService.getAllNotes(pageable)
+        return ResponseEntity.ok(notesPage)
     }
 
     @GetMapping("/{id}")
@@ -43,7 +53,7 @@ class NoteController(private val noteService: NoteService) {
         return ResponseEntity.status(HttpStatus.CREATED).body(note)
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     fun updateNote(
         @PathVariable id: Long,
         @Valid @RequestBody request: NoteUpdateRequest

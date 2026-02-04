@@ -15,6 +15,11 @@
       "key": "noteId",
       "value": "1",
       "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
     }
   ],
   "item": [
@@ -134,7 +139,122 @@
       "description": "Operations for managing notes"
     },
     {
-      "name": "Examples",
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Retrieve all users from the database"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Users by Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/search?name=João",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "João",
+                  "description": "Search term for user name (case-insensitive)"
+                }
+              ]
+            },
+            "description": "Search users by name (case-insensitive partial match)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            },
+            "description": "Retrieve a specific user by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"senha123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Create a new user. Name, email and password are required. Password must be between 8 and 15 characters."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.novo@example.com\",\n  \"password\": \"novaSenha123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            },
+            "description": "Update an existing user. All fields are optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            },
+            "description": "Delete a user by its ID"
+          },
+          "response": []
+        }
+      ],
+      "description": "Operations for managing users"
+    },
+    {
+      "name": "Examples - Notes",
       "item": [
         {
           "name": "Create Note - Minimal",
@@ -243,7 +363,142 @@
           "response": []
         }
       ],
-      "description": "Example requests demonstrating various scenarios"
+      "description": "Example requests demonstrating various scenarios for notes"
+    },
+    {
+      "name": "Examples - Users",
+      "item": [
+        {
+          "name": "Create User - Complete",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maria Santos\",\n  \"email\": \"maria.santos@example.com\",\n  \"password\": \"senhaSegura123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Create a user with all required fields"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User - Partial",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maria Santos Silva\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Update only the name of a user"
+          },
+          "response": []
+        },
+        {
+          "name": "Validation Error - Invalid Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuário Teste\",\n  \"email\": \"email-invalido\",\n  \"password\": \"senha123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Example of validation error - invalid email format"
+          },
+          "response": []
+        },
+        {
+          "name": "Validation Error - Short Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuário Teste\",\n  \"email\": \"usuario@example.com\",\n  \"password\": \"1234567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Example of validation error - password too short (minimum 8 characters)"
+          },
+          "response": []
+        },
+        {
+          "name": "Validation Error - Short Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AB\",\n  \"email\": \"usuario@example.com\",\n  \"password\": \"senha123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Example of validation error - name too short (minimum 3 characters)"
+          },
+          "response": []
+        },
+        {
+          "name": "Not Found Example",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/99999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "99999"]
+            },
+            "description": "Example of 404 Not Found error - user does not exist"
+          },
+          "response": []
+        }
+      ],
+      "description": "Example requests demonstrating various scenarios for users"
     }
   ]
 }
