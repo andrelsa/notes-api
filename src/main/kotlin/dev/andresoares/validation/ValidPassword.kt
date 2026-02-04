@@ -4,14 +4,6 @@ import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
-/**
- * Anotação customizada para validar senha forte.
- *
- * A senha deve conter:
- * - Pelo menos uma letra
- * - Pelo menos um número
- * - Pelo menos um caractere especial
- */
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [PasswordValidator::class])
