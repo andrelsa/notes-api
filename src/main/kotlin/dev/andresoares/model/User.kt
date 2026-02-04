@@ -1,4 +1,4 @@
-package dev.andresoares.dev.andresoares.model
+package dev.andresoares.model
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
