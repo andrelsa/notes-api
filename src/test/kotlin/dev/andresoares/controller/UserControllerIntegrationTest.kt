@@ -532,7 +532,7 @@ class UserControllerIntegrationTest {
         val createRequest = mapOf(
             "name" to "João Silva",
             "email" to "joao.long@example.com",
-            "password" to "Abc#1234567890123" // 18 caracteres (máximo é 15)
+            "password" to "Abc#1234567890123" // 17 caracteres (máximo é 15)
         )
 
         mockMvc.perform(
