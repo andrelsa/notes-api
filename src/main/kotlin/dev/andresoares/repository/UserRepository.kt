@@ -1,6 +1,6 @@
-package dev.andresoares.dev.andresoares.repository
+package dev.andresoares.repository
 
-import dev.andresoares.dev.andresoares.model.User
+import dev.andresoares.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

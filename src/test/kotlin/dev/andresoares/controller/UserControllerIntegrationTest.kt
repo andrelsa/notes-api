@@ -1,9 +1,9 @@
 package dev.andresoares.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.andresoares.dev.andresoares.dto.UserCreateRequest
-import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
-import dev.andresoares.dev.andresoares.repository.UserRepository
+import dev.andresoares.dto.UserCreateRequest
+import dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.repository.UserRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
