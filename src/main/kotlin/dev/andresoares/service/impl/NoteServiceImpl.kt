@@ -7,6 +7,8 @@ import dev.andresoares.exception.ResourceNotFoundException
 import dev.andresoares.model.Note
 import dev.andresoares.repository.NoteRepository
 import dev.andresoares.service.NoteService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,6 +17,10 @@ class NoteServiceImpl(private val noteRepository: NoteRepository) : NoteService 
 
     override fun getAllNotes(): List<NoteResponse> {
         return noteRepository.findAll().map { it.toResponse() }
+    }
+
+    override fun getAllNotes(pageable: Pageable): Page<NoteResponse> {
+        return noteRepository.findAll(pageable).map { it.toResponse() }
     }
 
     override fun getNoteById(id: Long): NoteResponse {

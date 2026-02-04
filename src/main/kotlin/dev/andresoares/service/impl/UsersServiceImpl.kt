@@ -7,14 +7,20 @@ import dev.andresoares.dev.andresoares.model.User
 import dev.andresoares.dev.andresoares.repository.UserRepository
 import dev.andresoares.dev.andresoares.service.UserService
 import dev.andresoares.exception.ResourceNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UsersServiceImpl(private val userRepository: UserRepository) : UserService {
+class UserServiceImpl(private val userRepository: UserRepository) : UserService {
 
     override fun getAllUsers(): List<UserResponse> {
         return userRepository.findAll().map { it.toResponse() }
+    }
+
+    override fun getAllUsers(pageable: Pageable): Page<UserResponse> {
+        return userRepository.findAll(pageable).map { it.toResponse() }
     }
 
     override fun getUserById(id: Long): UserResponse {

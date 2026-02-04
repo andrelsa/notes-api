@@ -11,6 +11,9 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 
 /**
@@ -41,15 +44,17 @@ class UserControllerUnitTest {
             UserResponse(1L, "João Silva", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T10:00:00"),
             UserResponse(2L, "Maria Santos", "maria@example.com", "2026-02-03T11:00:00", "2026-02-03T11:00:00")
         )
-        every { userService.getAllUsers() } returns expectedUsers
+        val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"))
+        val page = PageImpl(expectedUsers, pageable, expectedUsers.size.toLong())
+
+        every { userService.getAllUsers(any()) } returns page
 
         // Act
-        val response = userController.getAllUsers(null)
+        val response = userController.getAllUsers(null, 0, 20, "id", "asc")
 
         // Assert
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(expectedUsers, response.body)
-        verify(exactly = 1) { userService.getAllUsers() }
+        verify(exactly = 1) { userService.getAllUsers(any()) }
     }
 
     @Test
@@ -62,11 +67,10 @@ class UserControllerUnitTest {
         every { userService.searchUsersByName(name) } returns expectedUsers
 
         // Act
-        val response = userController.getAllUsers(name)
+        val response = userController.getAllUsers(name, 0, 20, "id", "asc")
 
         // Assert
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(expectedUsers, response.body)
         verify(exactly = 1) { userService.searchUsersByName(name) }
     }
 

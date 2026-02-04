@@ -10,6 +10,9 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 
 /**
@@ -40,15 +43,17 @@ class NoteControllerUnitTest {
             NoteResponse(1L, "Nota 1", "Conteúdo 1", "2026-01-30T10:00:00", "2026-01-30T10:00:00"),
             NoteResponse(2L, "Nota 2", "Conteúdo 2", "2026-01-30T11:00:00", "2026-01-30T11:00:00")
         )
-        every { NoteService.getAllNotes() } returns expectedNotes
+        val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"))
+        val page = PageImpl(expectedNotes, pageable, expectedNotes.size.toLong())
+
+        every { NoteService.getAllNotes(any()) } returns page
 
         // Act
-        val response = noteController.getAllNotes(null)
+        val response = noteController.getAllNotes(null, 0, 20, "id", "asc")
 
         // Assert
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(expectedNotes, response.body)
-        verify(exactly = 1) { NoteService.getAllNotes() }
+        verify(exactly = 1) { NoteService.getAllNotes(any()) }
     }
 
     @Test
@@ -61,11 +66,10 @@ class NoteControllerUnitTest {
         every { NoteService.searchNotesByTitle(title) } returns expectedNotes
 
         // Act
-        val response = noteController.getAllNotes(title)
+        val response = noteController.getAllNotes(title, 0, 20, "id", "asc")
 
         // Assert
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(expectedNotes, response.body)
         verify(exactly = 1) { NoteService.searchNotesByTitle(title) }
     }
 

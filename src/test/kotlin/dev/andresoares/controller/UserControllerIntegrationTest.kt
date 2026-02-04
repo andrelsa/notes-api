@@ -352,9 +352,12 @@ class UserControllerIntegrationTest {
             )
         }
 
-        // List all users
+        // List all users (retorna Page)
         mockMvc.perform(get("/api/v1/users"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$.content").isArray)
+            .andExpect(jsonPath("$.content.length()").value(2))
+            .andExpect(jsonPath("$.totalElements").value(2))
+            .andExpect(jsonPath("$.totalPages").value(1))
     }
 }

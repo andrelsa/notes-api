@@ -3,6 +3,8 @@ package dev.andresoares.dev.andresoares.service
 import dev.andresoares.dev.andresoares.dto.UserCreateRequest
 import dev.andresoares.dev.andresoares.dto.UserResponse
 import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 /**
  * Interface que define o contrato para operações de serviço relacionadas a Users.
@@ -20,6 +22,15 @@ interface UserService {
      * @return Lista de todas as notas em formato DTO
      */
     fun getAllUsers(): List<UserResponse>
+
+    /**
+     * Retorna todos os usuários com paginação e ordenação.
+     * @param pageable Configurações de paginação e ordenação
+     * @return Página de usuários em formato DTO
+     */
+    fun getAllUsers(pageable: Pageable): Page<UserResponse>
+
+    // ...existing code...
 
     /**
      * Busca um usuário específico por ID.

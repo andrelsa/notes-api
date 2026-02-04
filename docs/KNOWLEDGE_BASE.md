@@ -756,8 +756,9 @@ fun createNote(@Valid @RequestBody request: NoteCreateRequest): ResponseEntity<N
 
 **Notes:**
 ```
-GET    /api/v1/notes              # Listar todas
-GET    /api/v1/notes?title=search # Buscar por título
+GET    /api/v1/notes              # Listar todas (com paginação)
+GET    /api/v1/notes?title=search # Buscar por título (sem paginação)
+GET    /api/v1/notes?page=0&size=20&sortBy=id&direction=asc # Paginação completa
 GET    /api/v1/notes/{id}         # Buscar por ID
 POST   /api/v1/notes              # Criar
 PATCH  /api/v1/notes/{id}         # Atualizar (parcial)
@@ -766,12 +767,45 @@ DELETE /api/v1/notes/{id}         # Deletar
 
 **Users:**
 ```
-GET    /api/v1/users              # Listar todos
-GET    /api/v1/users?name=search  # Buscar por nome
+GET    /api/v1/users              # Listar todos (com paginação)
+GET    /api/v1/users?name=search  # Buscar por nome (sem paginação)
+GET    /api/v1/users?page=0&size=20&sortBy=id&direction=asc # Paginação completa
 GET    /api/v1/users/{id}         # Buscar por ID
 POST   /api/v1/users              # Criar
 PATCH  /api/v1/users/{id}         # Atualizar (parcial)
 DELETE /api/v1/users/{id}         # Deletar
+```
+
+#### Parâmetros de Paginação e Ordenação
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|-----------|------|--------|-----------|
+| `page` | Integer | 0 | Número da página (inicia em 0) |
+| `size` | Integer | 20 | Quantidade de itens por página |
+| `sortBy` | String | id | Campo para ordenação (id, title, name, createdAt, etc.) |
+| `direction` | String | asc | Direção da ordenação (asc ou desc) |
+
+**Exemplo de resposta paginada:**
+```json
+{
+  "content": [...],          // Array com os itens da página
+  "pageable": {
+    "pageNumber": 0,         // Página atual
+    "pageSize": 20,          // Tamanho da página
+    "sort": {...},           // Informações de ordenação
+    "offset": 0,             // Offset do primeiro item
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 5,           // Total de páginas
+  "totalElements": 100,      // Total de elementos
+  "last": false,             // É a última página?
+  "first": true,             // É a primeira página?
+  "size": 20,                // Tamanho da página
+  "number": 0,               // Número da página atual
+  "numberOfElements": 20,    // Quantidade de elementos nesta página
+  "empty": false             // Página está vazia?
+}
 ```
 
 #### Melhorias RESTful Implementadas
@@ -788,6 +822,12 @@ DELETE /api/v1/users/{id}         # Deletar
 **✅ PATCH para Atualização Parcial:**
 - Uso correto de `PATCH` para atualizações parciais
 - Campos opcionais no DTO de atualização
+
+**✅ Paginação e Ordenação:**
+- Suporte completo a paginação com Spring Data
+- Ordenação por qualquer campo
+- Metadados completos de paginação na resposta
+- Performance otimizada para grandes volumes de dados
 
 #### Status Codes
 - `200 OK`: GET, PUT bem-sucedidos
@@ -1215,10 +1255,20 @@ docker exec -it notesdb-postgres psql -U postgres -d notesdb
 
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|-------|
+| 2026-02-03 | 1.4.0 | Implementação de paginação e ordenação | Sistema |
 | 2026-02-03 | 1.3.0 | Melhorias RESTful: versionamento, endpoints unificados, PATCH | Sistema |
 | 2026-02-03 | 1.2.0 | Adição de endpoints e documentação de Users | Sistema |
 | 2026-02-02 | 1.1.0 | Atualização completa com informações do projeto real | Sistema |
 | 2026-02-02 | 1.0.0 | Criação inicial do documento | Sistema |
+
+**Principais mudanças na v1.4.0:**
+- ✅ **Paginação completa**: Suporte a paginação em `getAllNotes()` e `getAllUsers()`
+- ✅ **Ordenação flexível**: Sort por qualquer campo (id, title, name, createdAt, etc.)
+- ✅ **Query parameters**: `page`, `size`, `sortBy`, `direction`
+- ✅ **Metadados de paginação**: totalPages, totalElements, first, last, etc.
+- ✅ **Performance otimizada**: Queries otimizadas para grandes volumes
+- ✅ **Compatibilidade mantida**: Busca por filtro continua sem paginação
+- ✅ **Documentação atualizada**: Exemplos e guias completos
 
 **Principais mudanças na v1.3.0:**
 - ✅ **Versionamento da API**: URLs com `/api/v1/`
@@ -1261,4 +1311,4 @@ Este documento é a **fonte única de verdade** para agentes LLM trabalhando nes
 
 ---
 
-*Última atualização: 2026-02-03 | Versão 1.3.0*
+*Última atualização: 2026-02-03 | Versão 1.4.0*
