@@ -147,9 +147,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
             "description": "Retrieve all users from the database"
           },
@@ -161,9 +161,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/search?name=João",
+              "raw": "{{baseUrl}}/api/v1/users?name=João",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "search"],
+              "path": ["api", "v1", "users"],
               "query": [
                 {
                   "key": "name",
@@ -182,9 +182,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}"]
+              "path": ["api", "v1", "users", "{{userId}}"]
             },
             "description": "Retrieve a specific user by its ID"
           },
@@ -205,9 +205,9 @@
               "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"senha123456\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
             "description": "Create a new user. Name, email and password are required. Password must be between 8 and 15 characters."
           },
@@ -216,7 +216,7 @@
         {
           "name": "Update User",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -228,9 +228,9 @@
               "raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.novo@example.com\",\n  \"password\": \"novaSenha123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}"]
+              "path": ["api", "v1", "users", "{{userId}}"]
             },
             "description": "Update an existing user. All fields are optional."
           },
@@ -242,9 +242,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}"]
+              "path": ["api", "v1", "users", "{{userId}}"]
             },
             "description": "Delete a user by its ID"
           },
@@ -383,9 +383,9 @@
               "raw": "{\n  \"name\": \"Maria Santos\",\n  \"email\": \"maria.santos@example.com\",\n  \"password\": \"senhaSegura123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
             "description": "Create a user with all required fields"
           },
@@ -394,7 +394,7 @@
         {
           "name": "Update User - Partial",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -406,9 +406,9 @@
               "raw": "{\n  \"name\": \"Maria Santos Silva\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users/1",
+              "raw": "{{baseUrl}}/api/v1/users/1",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "1"]
+              "path": ["api", "v1", "users", "1"]
             },
             "description": "Update only the name of a user"
           },
@@ -429,9 +429,9 @@
               "raw": "{\n  \"name\": \"Usuário Teste\",\n  \"email\": \"email-invalido\",\n  \"password\": \"senha123456\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
             "description": "Example of validation error - invalid email format"
           },
@@ -452,9 +452,9 @@
               "raw": "{\n  \"name\": \"Usuário Teste\",\n  \"email\": \"usuario@example.com\",\n  \"password\": \"1234567\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
             "description": "Example of validation error - password too short (minimum 8 characters)"
           },
@@ -475,9 +475,9 @@
               "raw": "{\n  \"name\": \"AB\",\n  \"email\": \"usuario@example.com\",\n  \"password\": \"senha123456\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
             "description": "Example of validation error - name too short (minimum 3 characters)"
           },
@@ -489,9 +489,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/99999",
+              "raw": "{{baseUrl}}/api/v1/users/99999",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "99999"]
+              "path": ["api", "v1", "users", "99999"]
             },
             "description": "Example of 404 Not Found error - user does not exist"
           },
