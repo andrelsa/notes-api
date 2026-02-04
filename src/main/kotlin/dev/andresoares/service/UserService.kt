@@ -19,7 +19,7 @@ interface UserService {
 
     /**
      * Retorna todos os usuários cadastrados.
-     * @return Lista de todas as notas em formato DTO
+     * @return Lista de todos os usuários em formato DTO
      */
     fun getAllUsers(): List<UserResponse>
 
