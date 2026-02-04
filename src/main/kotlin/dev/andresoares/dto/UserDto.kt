@@ -1,5 +1,7 @@
-package dev.andresoares.dev.andresoares.dto
+package dev.andresoares.dto
 
+import dev.andresoares.validation.NoWhitespace
+import dev.andresoares.validation.ValidPassword
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -20,6 +22,8 @@ data class UserCreateRequest(
     @field:NotNull(message = "Field 'password' is required and must be provided in the request body")
     @field:NotBlank(message = "Field 'password' cannot be empty or blank")
     @field:Size(min = 8, max = 15, message = "Field 'password' must be between 8 and 15 characters")
+    @field:ValidPassword(message = "Field 'password' must contain at least one letter, one number, and one special character")
+    @field:NoWhitespace(message = "Field 'password' cannot contain whitespace characters")
     var password: String?
 )
 
@@ -31,6 +35,8 @@ data class UserUpdateRequest(
     val email: String?,
 
     @field:Size(min = 8, max = 15, message = "Field 'password' must be between 8 and 15 characters when provided")
+    @field:ValidPassword(message = "Field 'password' must contain at least one letter, one number, and one special character")
+    @field:NoWhitespace(message = "Field 'password' cannot contain whitespace characters")
     val password: String?
 )
 

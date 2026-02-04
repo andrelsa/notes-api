@@ -1,9 +1,9 @@
 package dev.andresoares.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.andresoares.dev.andresoares.dto.UserCreateRequest
-import dev.andresoares.dev.andresoares.dto.UserUpdateRequest
-import dev.andresoares.dev.andresoares.repository.UserRepository
+import dev.andresoares.dto.UserCreateRequest
+import dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.repository.UserRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +38,7 @@ class UserControllerIntegrationTest {
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Abc#123def"
         )
 
         // Create user
@@ -68,7 +68,7 @@ class UserControllerIntegrationTest {
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Abc#123def"
         )
 
         // Create user
@@ -86,7 +86,7 @@ class UserControllerIntegrationTest {
         val updateRequest = UserUpdateRequest(
             name = "João Silva Atualizado",
             email = "joao.novo@example.com",
-            password = "novaSenha123"
+            password = "Abc#123def"
         )
 
         // Update user
@@ -105,7 +105,7 @@ class UserControllerIntegrationTest {
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Abc#123def"
         )
 
         // Create user
@@ -138,7 +138,7 @@ class UserControllerIntegrationTest {
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Abc#123def"
         )
 
         // Create user
@@ -171,7 +171,7 @@ class UserControllerIntegrationTest {
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Abc#123def"
         )
 
         // Create user
@@ -186,7 +186,7 @@ class UserControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val userId = response.get("id").asLong()
 
-        val updateRequest = mapOf("password" to "novaSenha456")
+        val updateRequest = mapOf("password" to "Abc#123def")
 
         // Update user - only password
         mockMvc.perform(
@@ -204,7 +204,7 @@ class UserControllerIntegrationTest {
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Abc#123def"
         )
 
         // Create user
@@ -233,7 +233,7 @@ class UserControllerIntegrationTest {
         val createRequest = mapOf(
             "name" to "",
             "email" to "joao@example.com",
-            "password" to "senha123456"
+            "password" to "Abc#123def"
         )
 
         mockMvc.perform(
@@ -252,7 +252,7 @@ class UserControllerIntegrationTest {
         val createRequest = mapOf(
             "name" to "João Silva",
             "email" to "email-invalido",
-            "password" to "senha123456"
+            "password" to "Abc#123def"
         )
 
         mockMvc.perform(
@@ -288,7 +288,7 @@ class UserControllerIntegrationTest {
         val createRequest = mapOf(
             "name" to "Jo",
             "email" to "joao@example.com",
-            "password" to "senha123456"
+            "password" to "Abc#123def"
         )
 
         mockMvc.perform(
@@ -304,9 +304,9 @@ class UserControllerIntegrationTest {
     @Test
     fun `should search users by name`() {
         // Create test users
-        val user1 = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "senha123456")
-        val user2 = UserCreateRequest(name = "Maria Santos", email = "maria@example.com", password = "senha123456")
-        val user3 = UserCreateRequest(name = "João Pedro", email = "joaop@example.com", password = "senha123456")
+        val user1 = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
+        val user2 = UserCreateRequest(name = "Maria Santos", email = "maria@example.com", password = "Abc#123def")
+        val user3 = UserCreateRequest(name = "João Pedro", email = "joaop@example.com", password = "Abc#123def")
 
         listOf(user1, user2, user3).forEach { request ->
             mockMvc.perform(
@@ -325,7 +325,7 @@ class UserControllerIntegrationTest {
     @Test
     fun `should return empty list when searching for non-existent name`() {
         // Create test user
-        val user = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "senha123456")
+        val user = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
         mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -341,8 +341,8 @@ class UserControllerIntegrationTest {
     @Test
     fun `should list all users`() {
         // Create test users
-        val user1 = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "senha123456")
-        val user2 = UserCreateRequest(name = "Maria Santos", email = "maria@example.com", password = "senha123456")
+        val user1 = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
+        val user2 = UserCreateRequest(name = "Maria Santos", email = "maria@example.com", password = "Abc#123def")
 
         listOf(user1, user2).forEach { request ->
             mockMvc.perform(
@@ -359,5 +359,255 @@ class UserControllerIntegrationTest {
             .andExpect(jsonPath("$.content.length()").value(2))
             .andExpect(jsonPath("$.totalElements").value(2))
             .andExpect(jsonPath("$.totalPages").value(1))
+    }
+
+    // ==================== TESTES DE VALIDAÇÃO DE SENHA ====================
+
+    @Test
+    fun `should reject password with space at the beginning`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to " Abc#123def"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject password with space at the end`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to "Abc#123def "
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject password with space in the middle`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to "Abc #123def"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject password with multiple spaces`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to "Abc  #123  def"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject password without letters`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to "12345678#"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject password without numbers`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to "AbcDefgh#"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject password without special characters`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao@example.com",
+            "password" to "Abc12345678"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should accept valid password with all requirements`() {
+        val createRequest = UserCreateRequest(
+            name = "João Silva",
+            email = "joao.valid@example.com",
+            password = "Abc#123def"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isCreated)
+            .andExpect(jsonPath("$.name").value("João Silva"))
+            .andExpect(jsonPath("$.email").value("joao.valid@example.com"))
+    }
+
+    @Test
+    fun `should accept password with different special characters`() {
+        val passwords = listOf("Pass@123", "Pass!123", "Pass#123", "Pass\$123", "Pass%123", "Pass&123")
+
+        passwords.forEachIndexed { index, password ->
+            val createRequest = UserCreateRequest(
+                name = "User $index",
+                email = "user$index@example.com",
+                password = password
+            )
+
+            mockMvc.perform(
+                post("/api/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(createRequest))
+            )
+                .andExpect(status().isCreated)
+        }
+    }
+
+    @Test
+    fun `should reject password that is too long`() {
+        val createRequest = mapOf(
+            "name" to "João Silva",
+            "email" to "joao.long@example.com",
+            "password" to "Abc#1234567890123" // 17 caracteres (máximo é 15)
+        )
+
+        mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject update with password containing spaces`() {
+        // Create user with valid password
+        val createRequest = UserCreateRequest(
+            name = "João Silva",
+            email = "joao.update1@example.com",
+            password = "Abc#123def"
+        )
+
+        val createResult = mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isCreated)
+            .andReturn()
+
+        val response = objectMapper.readTree(createResult.response.contentAsString)
+        val userId = response.get("id").asLong()
+
+        // Try to update with invalid password (with spaces)
+        val updateRequest = mapOf("password" to "Abc #123def")
+
+        mockMvc.perform(
+            patch("/api/v1/users/$userId")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
+    }
+
+    @Test
+    fun `should reject update with weak password`() {
+        // Create user with valid password
+        val createRequest = UserCreateRequest(
+            name = "João Silva",
+            email = "joao.update2@example.com",
+            password = "Abc#123def"
+        )
+
+        val createResult = mockMvc.perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isCreated)
+            .andReturn()
+
+        val response = objectMapper.readTree(createResult.response.contentAsString)
+        val userId = response.get("id").asLong()
+
+        // Try to update with weak password (no special character)
+        val updateRequest = mapOf("password" to "Abc123def")
+
+        mockMvc.perform(
+            patch("/api/v1/users/$userId")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest))
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.error").value("Bad Request"))
+            .andExpect(jsonPath("$.validationErrors.password").exists())
     }
 }
