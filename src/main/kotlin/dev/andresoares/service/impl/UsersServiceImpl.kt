@@ -125,6 +125,9 @@ class UserServiceImpl(
             throw InvalidRoleException("Cannot remove ROLE_USER when it's the only role. User must have at least one role.")
         }
 
+        if (!UserRole.isValidRole(role)) {
+            throw InvalidRoleException("Invalid role: $role. Valid roles are: ${UserRole.getAllRoleNames().joinToString(", ")}")
+        }
         user.roles.remove(role)
 
         // Garantir que sempre tenha pelo menos ROLE_USER
