@@ -215,10 +215,6 @@ class AuthControllerIntegrationTest {
 
         val loginResponse = objectMapper.readTree(loginResult.response.contentAsString)
         val refreshToken = loginResponse.get("refreshToken").asText()
-
-        // Esperar um pouco para garantir que o novo token será diferente
-        Thread.sleep(1000)
-
         // Renovar o token
         val refreshRequest = RefreshTokenRequest(refreshToken = refreshToken)
 
