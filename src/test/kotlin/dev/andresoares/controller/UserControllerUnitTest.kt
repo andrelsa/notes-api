@@ -40,8 +40,8 @@ class UserControllerUnitTest {
     fun `getAllUsers deve retornar lista de usuarios`() {
         // Arrange
         val expectedUsers = listOf(
-            UserResponse(1L, "João Silva", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T10:00:00"),
-            UserResponse(2L, "Maria Santos", "maria@example.com", "2026-02-03T11:00:00", "2026-02-03T11:00:00")
+            UserResponse(1L, "João Silva", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T10:00:00"),
+            UserResponse(2L, "Maria Santos", "maria@example.com", setOf("ROLE_USER"), "2026-02-03T11:00:00", "2026-02-03T11:00:00")
         )
         val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"))
         val page = PageImpl(expectedUsers, pageable, expectedUsers.size.toLong())
@@ -61,7 +61,7 @@ class UserControllerUnitTest {
         // Arrange
         val name = "João"
         val expectedUsers = listOf(
-            UserResponse(1L, "João Silva", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T10:00:00")
+            UserResponse(1L, "João Silva", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T10:00:00")
         )
         every { userService.searchUsersByName(name) } returns expectedUsers
 
@@ -77,7 +77,7 @@ class UserControllerUnitTest {
     fun `getUserById deve retornar usuario quando id existe`() {
         // Arrange
         val userId = 1L
-        val expectedUser = UserResponse(userId, "João Silva", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T10:00:00")
+        val expectedUser = UserResponse(userId, "João Silva", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T10:00:00")
         every { userService.getUserById(userId) } returns expectedUser
 
         // Act
@@ -97,7 +97,7 @@ class UserControllerUnitTest {
             email = "joao@example.com",
             password = "senha123456"
         )
-        val expectedUser = UserResponse(1L, "João Silva", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T10:00:00")
+        val expectedUser = UserResponse(1L, "João Silva", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T10:00:00")
         every { userService.createUser(request) } returns expectedUser
 
         // Act
@@ -118,7 +118,7 @@ class UserControllerUnitTest {
             email = "joao.novo@example.com",
             password = "novaSenha123"
         )
-        val expectedUser = UserResponse(userId, "João Silva Atualizado", "joao.novo@example.com", "2026-02-03T10:00:00", "2026-02-03T11:00:00")
+        val expectedUser = UserResponse(userId, "João Silva Atualizado", "joao.novo@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T11:00:00")
         every { userService.updateUser(userId, request) } returns expectedUser
 
         // Act
@@ -135,7 +135,7 @@ class UserControllerUnitTest {
         // Arrange
         val userId = 1L
         val request = UserUpdateRequest(name = "João Atualizado", email = null, password = null)
-        val expectedUser = UserResponse(userId, "João Atualizado", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T11:00:00")
+        val expectedUser = UserResponse(userId, "João Atualizado", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T11:00:00")
         every { userService.updateUser(userId, request) } returns expectedUser
 
         // Act
@@ -152,7 +152,7 @@ class UserControllerUnitTest {
         // Arrange
         val userId = 1L
         val request = UserUpdateRequest(name = null, email = "novo@example.com", password = null)
-        val expectedUser = UserResponse(userId, "João Silva", "novo@example.com", "2026-02-03T10:00:00", "2026-02-03T11:00:00")
+        val expectedUser = UserResponse(userId, "João Silva", "novo@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T11:00:00")
         every { userService.updateUser(userId, request) } returns expectedUser
 
         // Act
@@ -165,11 +165,11 @@ class UserControllerUnitTest {
     }
 
     @Test
-    fun `updateUser deve permitir atualizacao parcial - apenas senha`() {
+    fun `updateUser deve permitir atualizacao parcial - apenas password`() {
         // Arrange
         val userId = 1L
         val request = UserUpdateRequest(name = null, email = null, password = "novaSenha123")
-        val expectedUser = UserResponse(userId, "João Silva", "joao@example.com", "2026-02-03T10:00:00", "2026-02-03T11:00:00")
+        val expectedUser = UserResponse(userId, "João Silva", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T11:00:00")
         every { userService.updateUser(userId, request) } returns expectedUser
 
         // Act

@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "test@example.com", roles = ["USER"])
 class UserControllerIntegrationTest {
 
     @Autowired
@@ -50,6 +52,8 @@ class UserControllerIntegrationTest {
             .andExpect(status().isCreated)
             .andExpect(jsonPath("$.name").value("João Silva"))
             .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
+            .andExpect(jsonPath("$.roles").isArray)
+            .andExpect(jsonPath("$.roles[0]").value("ROLE_USER"))
             .andReturn()
 
         val response = objectMapper.readTree(createResult.response.contentAsString)
@@ -61,6 +65,8 @@ class UserControllerIntegrationTest {
             .andExpect(jsonPath("$.id").value(userId))
             .andExpect(jsonPath("$.name").value("João Silva"))
             .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
+            .andExpect(jsonPath("$.roles").isArray)
+            .andExpect(jsonPath("$.roles[0]").value("ROLE_USER"))
     }
 
     @Test
@@ -98,6 +104,7 @@ class UserControllerIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("João Silva Atualizado"))
             .andExpect(jsonPath("$.email").value("joao.novo@example.com"))
+            .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
@@ -131,6 +138,7 @@ class UserControllerIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("João Atualizado"))
             .andExpect(jsonPath("$.email").value("joao.silva@example.com")) // Email não mudou
+            .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
@@ -164,6 +172,7 @@ class UserControllerIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("João Silva")) // Nome não mudou
             .andExpect(jsonPath("$.email").value("novo.email@example.com"))
+            .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
@@ -197,6 +206,7 @@ class UserControllerIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("João Silva")) // Nome não mudou
             .andExpect(jsonPath("$.email").value("joao.silva@example.com")) // Email não mudou
+            .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
@@ -505,6 +515,8 @@ class UserControllerIntegrationTest {
             .andExpect(status().isCreated)
             .andExpect(jsonPath("$.name").value("João Silva"))
             .andExpect(jsonPath("$.email").value("joao.valid@example.com"))
+            .andExpect(jsonPath("$.roles").isArray)
+            .andExpect(jsonPath("$.roles[0]").value("ROLE_USER"))
     }
 
     @Test

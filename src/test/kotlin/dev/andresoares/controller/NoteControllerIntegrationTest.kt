@@ -3,19 +3,23 @@ package dev.andresoares.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.andresoares.dto.NoteCreateRequest
 import dev.andresoares.dto.NoteUpdateRequest
+import dev.andresoares.model.User
 import dev.andresoares.repository.NoteRepository
+import dev.andresoares.repository.UserRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "test@example.com", roles = ["USER"])
 class NoteControllerIntegrationTest {
 
     @Autowired
@@ -27,10 +31,23 @@ class NoteControllerIntegrationTest {
     @Autowired
     private lateinit var noteRepository: NoteRepository
 
+    @Autowired
+    private lateinit var userRepository: UserRepository
+
     @BeforeEach
     fun setUp() {
         // Limpa o banco de dados antes de cada teste
         noteRepository.deleteAll()
+        userRepository.deleteAll()
+
+        // Cria um usuário padrão para os testes
+        userRepository.save(
+            User(
+                name = "Test User",
+                email = "test@notesapi.com",
+                password = "Test@123"
+            )
+        )
     }
 
     @Test

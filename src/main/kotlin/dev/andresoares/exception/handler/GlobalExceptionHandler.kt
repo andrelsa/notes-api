@@ -9,6 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.validation.FieldError
 import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.HttpRequestMethodNotSupportedException
@@ -96,6 +98,28 @@ class GlobalExceptionHandler {
             .build()
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorResponse)
+    }
+
+    /**
+     * Trata exceções de role inválida
+     * HTTP Status: 400 BAD_REQUEST
+     */
+    @ExceptionHandler(InvalidRoleException::class)
+    fun handleInvalidRoleException(
+        ex: InvalidRoleException,
+        request: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        logger.warn("Invalid role: ${ex.message}", ex)
+
+        val errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.BAD_REQUEST.value())
+            .error(HttpStatus.BAD_REQUEST.reasonPhrase)
+            .message(ex.message ?: "Invalid role")
+            .path(request.requestURI)
+            .traceId(generateTraceId())
+            .build()
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
     }
 
     /**
@@ -276,7 +300,7 @@ class GlobalExceptionHandler {
                     val causeMessage = rootCause.message ?: ""
                     if (causeMessage.contains("Cannot deserialize value")) {
                         detailedMessage = "Invalid value format in JSON request"
-                    }
+                      }
                 }
             }
             exceptionMessage.contains("not present") || exceptionMessage.contains("missing") -> {
@@ -467,6 +491,28 @@ class GlobalExceptionHandler {
     }
 
     // ==================== EXCEÇÕES DE SEGURANÇA ====================
+
+    /**
+     * Trata exceções de credenciais inválidas (Spring Security)
+     * HTTP Status: 401 UNAUTHORIZED
+     */
+    @ExceptionHandler(BadCredentialsException::class, AuthenticationException::class)
+    fun handleBadCredentialsException(
+        ex: Exception,
+        request: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        logger.warn("Authentication failed: ${ex.message}")
+
+        val errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error(HttpStatus.UNAUTHORIZED.reasonPhrase)
+            .message(ex.message ?: "Invalid credentials")
+            .path(request.requestURI)
+            .traceId(generateTraceId())
+            .build()
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse)
+    }
 
     /**
      * Trata exceções de não autorizado

@@ -1,0 +1,97 @@
+### ========================================
+### AUTENTICAÇÃO JWT - Notes API
+### ========================================
+
+### Variáveis
+@baseUrl = http://localhost:8080/api/v1
+@accessToken =
+@refreshToken =
+
+### ========================================
+### 1. CRIAR USUÁRIO (Registro)
+### ========================================
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao@example.com",
+  "password": "Senha@123"
+}
+
+### ========================================
+### 2. LOGIN (Obter Tokens)
+### ========================================
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "Senha@123"
+}
+
+### ========================================
+### 3. LISTAR NOTAS (Com Autenticação)
+### ========================================
+GET {{baseUrl}}/notes
+Authorization: Bearer {{accessToken}}
+
+### ========================================
+### 4. CRIAR NOTA (Com Autenticação)
+### ========================================
+POST {{baseUrl}}/notes
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Minha Nota Privada",
+  "content": "Esta nota foi criada com autenticação JWT"
+}
+
+### ========================================
+### 5. REFRESH TOKEN (Renovar Access Token)
+### ========================================
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### ========================================
+### 6. LOGOUT (Revogar Refresh Token)
+### ========================================
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### ========================================
+### TESTES DE ERRO
+### ========================================
+
+### 7. Login com credenciais inválidas
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "SenhaErrada"
+}
+
+### 8. Acessar endpoint protegido sem token
+GET {{baseUrl}}/notes
+
+### 9. Acessar endpoint protegido com token inválido
+GET {{baseUrl}}/notes
+Authorization: Bearer token-invalido-aqui
+
+### 10. Refresh token inválido
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "token-invalido"
+}

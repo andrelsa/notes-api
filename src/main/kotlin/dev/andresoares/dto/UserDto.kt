@@ -24,7 +24,10 @@ data class UserCreateRequest(
     @field:Size(min = 8, max = 15, message = "Field 'password' must be between 8 and 15 characters")
     @field:ValidPassword(message = "Field 'password' must contain at least one letter, one number, and one special character")
     @field:NoWhitespace(message = "Field 'password' cannot contain whitespace characters")
-    var password: String?
+    var password: String?,
+
+    // Roles opcionais - se não fornecido, será atribuído ROLE_USER por padrão
+    val roles: Set<String>? = null
 )
 
 data class UserUpdateRequest(
@@ -37,13 +40,17 @@ data class UserUpdateRequest(
     @field:Size(min = 8, max = 15, message = "Field 'password' must be between 8 and 15 characters when provided")
     @field:ValidPassword(message = "Field 'password' must contain at least one letter, one number, and one special character")
     @field:NoWhitespace(message = "Field 'password' cannot contain whitespace characters")
-    val password: String?
+    val password: String?,
+
+    // Roles opcionais para atualização (apenas admins devem poder atualizar)
+    val roles: Set<String>? = null
 )
 
 data class UserResponse(
     val id: Long,
     val name: String,
     val email: String,
+    val roles: Set<String>,
     val createdAt: String,
     val updatedAt: String
 )

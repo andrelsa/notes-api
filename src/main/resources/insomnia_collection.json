@@ -1,21 +1,119 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2026-02-03T00:00:00.000Z",
+  "__export_date": "2026-02-05T00:00:00.000Z",
   "__export_source": "insomnia.desktop.app:v9.0.0",
   "resources": [
+    {
+      "_id": "req_auth_login",
+      "parentId": "fld_auth",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "url": "{{ _.baseUrl }}/api/v1/auth/login",
+      "name": "Login",
+      "description": "Autenticar usuário com email e senha. Retorna access token (válido por 1 hora) e refresh token (válido por 7 dias).\n\n**Autenticação Obrigatória:** Não - Endpoint público",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"senha123456\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1738713600000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_refresh",
+      "parentId": "fld_auth",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "url": "{{ _.baseUrl }}/api/v1/auth/refresh",
+      "name": "Refresh Token",
+      "description": "Renovar access token usando refresh token. Retorna novos tokens.\n\n**Autenticação Obrigatória:** Não - Endpoint público",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"refreshToken\": \"COLE_SEU_REFRESH_TOKEN_AQUI\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1738713600001,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_logout",
+      "parentId": "fld_auth",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "url": "{{ _.baseUrl }}/api/v1/auth/logout",
+      "name": "Logout",
+      "description": "Fazer logout e revogar refresh token. Invalida a sessão atual.\n\n**Autenticação Obrigatória:** Não - Endpoint público",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"refreshToken\": \"COLE_SEU_REFRESH_TOKEN_AQUI\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1738713600002,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
     {
       "_id": "req_get_all",
       "parentId": "fld_notes",
       "modified": 1706832000000,
       "created": 1706832000000,
-      "url": "http://localhost:8080/api/v1/notes",
+      "url": "{{ _.baseUrl }}/api/v1/notes",
       "name": "Get All Notes",
-      "description": "Lista todas as notas disponíveis",
+      "description": "Lista todas as notas disponíveis.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization (copie o accessToken do login)",
       "method": "GET",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1706486400000,
       "isPrivate": false,
@@ -32,9 +130,9 @@
       "parentId": "fld_notes",
       "modified": 1706832000000,
       "created": 1706832000000,
-      "url": "http://localhost:8080/api/v1/notes?title=Spring",
+      "url": "{{ _.baseUrl }}/api/v1/notes?title=Spring",
       "name": "Search Notes by Title",
-      "description": "Busca notas pelo título",
+      "description": "Busca notas pelo título.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "GET",
       "body": {},
       "parameters": [
@@ -46,7 +144,12 @@
           "disabled": false
         }
       ],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1706486400001,
       "isPrivate": false,
@@ -63,13 +166,18 @@
       "parentId": "fld_notes",
       "modified": 1706832000000,
       "created": 1706832000000,
-      "url": "http://localhost:8080/api/v1/notes/1",
+      "url": "{{ _.baseUrl }}/api/v1/notes/1",
       "name": "Get Note by ID",
-      "description": "Busca uma nota específica pelo ID",
+      "description": "Busca uma nota específica pelo ID.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "GET",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1706486400002,
       "isPrivate": false,
@@ -86,9 +194,9 @@
       "parentId": "fld_notes",
       "modified": 1706832000000,
       "created": 1706832000000,
-      "url": "http://localhost:8080/api/v1/notes",
+      "url": "{{ _.baseUrl }}/api/v1/notes",
       "name": "Create Note",
-      "description": "Cria uma nova nota",
+      "description": "Cria uma nova nota.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "POST",
       "body": {
         "mimeType": "application/json",
@@ -99,6 +207,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -117,9 +229,9 @@
       "parentId": "fld_notes",
       "modified": 1706832000000,
       "created": 1706832000000,
-      "url": "http://localhost:8080/api/v1/notes/1",
+      "url": "{{ _.baseUrl }}/api/v1/notes/1",
       "name": "Update Note",
-      "description": "Atualiza uma nota existente",
+      "description": "Atualiza uma nota existente.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "PUT",
       "body": {
         "mimeType": "application/json",
@@ -130,6 +242,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -148,13 +264,18 @@
       "parentId": "fld_notes",
       "modified": 1706832000000,
       "created": 1706832000000,
-      "url": "http://localhost:8080/api/v1/notes/1",
+      "url": "{{ _.baseUrl }}/api/v1/notes/1",
       "name": "Delete Note",
-      "description": "Remove uma nota pelo ID",
+      "description": "Remove uma nota pelo ID.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "DELETE",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1706486400005,
       "isPrivate": false,
@@ -171,13 +292,18 @@
       "parentId": "fld_users",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "http://localhost:8080/api/v1/users",
+      "url": "{{ _.baseUrl }}/api/v1/users",
       "name": "Get All Users",
-      "description": "Lista todos os usuários disponíveis",
+      "description": "Lista todos os usuários disponíveis.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "GET",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1707004800000,
       "isPrivate": false,
@@ -194,9 +320,9 @@
       "parentId": "fld_users",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "http://localhost:8080/api/v1/users?name=João",
+      "url": "{{ _.baseUrl }}/api/v1/users?name=João",
       "name": "Search Users by Name",
-      "description": "Busca usuários pelo nome",
+      "description": "Busca usuários pelo nome.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "GET",
       "body": {},
       "parameters": [
@@ -208,7 +334,12 @@
           "disabled": false
         }
       ],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1707004800001,
       "isPrivate": false,
@@ -225,13 +356,18 @@
       "parentId": "fld_users",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "http://localhost:8080/api/v1/users/1",
+      "url": "{{ _.baseUrl }}/api/v1/users/1",
       "name": "Get User by ID",
-      "description": "Busca um usuário específico pelo ID",
+      "description": "Busca um usuário específico pelo ID.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "GET",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1707004800002,
       "isPrivate": false,
@@ -248,9 +384,9 @@
       "parentId": "fld_users",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "http://localhost:8080/api/v1/users",
-      "name": "Create User",
-      "description": "Cria um novo usuário",
+      "url": "{{ _.baseUrl }}/api/v1/users",
+      "name": "Create User (Register)",
+      "description": "Cria um novo usuário (Registro público).\n\n**Autenticação Obrigatória:** Não - Este é um endpoint público para registro de usuário",
       "method": "POST",
       "body": {
         "mimeType": "application/json",
@@ -279,9 +415,9 @@
       "parentId": "fld_users",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "http://localhost:8080/api/v1/users/1",
+      "url": "{{ _.baseUrl }}/api/v1/users/1",
       "name": "Update User",
-      "description": "Atualiza um usuário existente",
+      "description": "Atualiza um usuário existente.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
@@ -292,6 +428,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -310,13 +450,18 @@
       "parentId": "fld_users",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "http://localhost:8080/api/v1/users/1",
+      "url": "{{ _.baseUrl }}/api/v1/users/1",
       "name": "Delete User",
-      "description": "Remove um usuário pelo ID",
+      "description": "Remove um usuário pelo ID.\n\n**Autenticação Obrigatória:** Sim - Token JWT necessário no header Authorization",
       "method": "DELETE",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1707004800005,
       "isPrivate": false,
@@ -364,7 +509,7 @@
       "parentId": "fld_users_examples",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "{{ _.baseUrl }}/api/users/1",
+      "url": "{{ _.baseUrl }}/api/v1/users/1",
       "name": "Update User - Partial",
       "description": "Atualiza apenas o nome do usuário",
       "method": "PUT",
@@ -488,7 +633,7 @@
       "parentId": "fld_users_examples",
       "modified": 1707004800000,
       "created": 1707004800000,
-      "url": "{{ _.baseUrl }}/api/users/99999",
+      "url": "{{ _.baseUrl }}/api/v1/users/99999",
       "name": "Not Found Example",
       "description": "Exemplo de erro 404 Not Found - usuário não existe",
       "method": "GET",
@@ -513,7 +658,7 @@
       "created": 1706486400000,
       "url": "{{ _.baseUrl }}/api/v1/notes",
       "name": "Create Note - Minimal",
-      "description": "Create a note with only the required title field",
+      "description": "Create a note with only the required title field.\n\n**Autenticação Obrigatória:** Sim",
       "method": "POST",
       "body": {
         "mimeType": "application/json",
@@ -524,6 +669,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -544,7 +693,7 @@
       "created": 1706486400000,
       "url": "{{ _.baseUrl }}/api/v1/notes",
       "name": "Create Note - Complete",
-      "description": "Create a note with both title and content",
+      "description": "Create a note with both title and content.\n\n**Autenticação Obrigatória:** Sim",
       "method": "POST",
       "body": {
         "mimeType": "application/json",
@@ -555,6 +704,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -573,9 +726,9 @@
       "parentId": "fld_examples",
       "modified": 1706486400000,
       "created": 1706486400000,
-      "url": "{{ _.baseUrl }}/api/notes/1",
+      "url": "{{ _.baseUrl }}/api/v1/notes/1",
       "name": "Update Note - Partial",
-      "description": "Update only the title of a note",
+      "description": "Update only the title of a note.\n\n**Autenticação Obrigatória:** Sim",
       "method": "PUT",
       "body": {
         "mimeType": "application/json",
@@ -586,6 +739,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -606,7 +763,7 @@
       "created": 1706486400000,
       "url": "{{ _.baseUrl }}/api/v1/notes",
       "name": "Validation Error Example",
-      "description": "Example of validation error - title cannot be blank",
+      "description": "Example of validation error - title cannot be blank.\n\n**Autenticação Obrigatória:** Sim",
       "method": "POST",
       "body": {
         "mimeType": "application/json",
@@ -617,6 +774,10 @@
         {
           "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
         }
       ],
       "authentication": {},
@@ -635,13 +796,18 @@
       "parentId": "fld_examples",
       "modified": 1706486400000,
       "created": 1706486400000,
-      "url": "{{ _.baseUrl }}/api/notes/99999",
+      "url": "{{ _.baseUrl }}/api/v1/notes/99999",
       "name": "Not Found Example",
-      "description": "Example of 404 Not Found error",
+      "description": "Example of 404 Not Found error.\n\n**Autenticação Obrigatória:** Sim",
       "method": "GET",
       "body": {},
       "parameters": [],
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_AQUI"
+        }
+      ],
       "authentication": {},
       "metaSortKey": -1706486400010,
       "isPrivate": false,
@@ -654,12 +820,127 @@
       "_type": "request"
     },
     {
+      "_id": "fld_auth",
+      "parentId": "wrk_main",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "name": "Authentication",
+      "description": "Authentication endpoints for login, token refresh, and logout. These endpoints do not require authentication.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1738713600000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_admin_update_roles",
+      "parentId": "fld_admin_roles",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "url": "{{ _.baseUrl }}/api/v1/admin/users/1/roles",
+      "name": "Update User Roles (Replace All)",
+      "description": "Substituir todas as roles de um usuário (requer ROLE_ADMIN).\n\n**Autenticação Obrigatória:** Sim - Requer ROLE_ADMIN\n\n**Roles disponíveis:** ROLE_USER, ROLE_ADMIN, ROLE_MANAGER, ROLE_VIEWER",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"roles\": [\"ROLE_USER\", \"ROLE_ADMIN\"]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_ADMIN_AQUI"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1738713600010,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_admin_add_role",
+      "parentId": "fld_admin_roles",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "url": "{{ _.baseUrl }}/api/v1/admin/users/1/roles/ROLE_MANAGER",
+      "name": "Add Role to User",
+      "description": "Adicionar uma role sem remover as existentes (requer ROLE_ADMIN).\n\n**Autenticação Obrigatória:** Sim - Requer ROLE_ADMIN",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_ADMIN_AQUI"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1738713600011,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_admin_remove_role",
+      "parentId": "fld_admin_roles",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "url": "{{ _.baseUrl }}/api/v1/admin/users/1/roles/ROLE_MANAGER",
+      "name": "Remove Role from User",
+      "description": "Remover uma role de um usuário (requer ROLE_ADMIN).\n\n**Autenticação Obrigatória:** Sim - Requer ROLE_ADMIN\n\n**Nota:** Não é possível remover ROLE_USER se for a única role.",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer COLE_SEU_ACCESS_TOKEN_ADMIN_AQUI"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1738713600012,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_admin_roles",
+      "parentId": "wrk_main",
+      "modified": 1738713600000,
+      "created": 1738713600000,
+      "name": "Admin - Roles Management",
+      "description": "Endpoints administrativos para gerenciar roles. Todos requerem ROLE_ADMIN.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1738713599999,
+      "_type": "request_group"
+    },
+    {
       "_id": "fld_notes",
       "parentId": "wrk_main",
       "modified": 1706486400000,
       "created": 1706486400000,
       "name": "Notes",
-      "description": "Operations for managing notes",
+      "description": "Operations for managing notes. All endpoints require JWT authentication.",
       "environment": {},
       "environmentPropertyOrder": null,
       "metaSortKey": -1706486400000,
@@ -671,7 +952,7 @@
       "modified": 1707004800000,
       "created": 1707004800000,
       "name": "Users",
-      "description": "Operations for managing users",
+      "description": "Operations for managing users. Most endpoints require JWT authentication except user registration (POST /users).",
       "environment": {},
       "environmentPropertyOrder": null,
       "metaSortKey": -1706486399999,
@@ -683,7 +964,7 @@
       "modified": 1706486400000,
       "created": 1706486400000,
       "name": "Examples - Notes",
-      "description": "Example requests demonstrating various scenarios for notes",
+      "description": "Example requests demonstrating various scenarios for notes. All require JWT authentication.",
       "environment": {},
       "environmentPropertyOrder": null,
       "metaSortKey": -1706486400001,
@@ -707,7 +988,7 @@
       "modified": 1706486400000,
       "created": 1706486400000,
       "name": "Notes API",
-      "description": "Complete API collection for Notes API - REST API for managing notes",
+      "description": "Complete API collection for Notes API - REST API for managing notes with JWT authentication",
       "scope": "collection",
       "_type": "workspace"
     },
@@ -717,8 +998,12 @@
       "modified": 1706832000000,
       "created": 1706832000000,
       "name": "Base Environment",
-      "data": {},
-      "dataPropertyOrder": null,
+      "data": {
+        "baseUrl": "http://localhost:8080"
+      },
+      "dataPropertyOrder": {
+        "baseUrl": 1
+      },
       "color": null,
       "isPrivate": false,
       "metaSortKey": 1706832000000,
