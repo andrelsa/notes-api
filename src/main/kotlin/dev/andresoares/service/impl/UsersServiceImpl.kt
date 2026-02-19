@@ -46,7 +46,7 @@ class UserServiceImpl(
             name = request.name!!,
             email = request.email!!,
             password = passwordEncoder.encode(request.password!!), // Criptografar senha
-            roles = request.roles?.toMutableSet() ?: mutableSetOf("ROLE_USER") // Usar roles fornecidas ou padrão
+            roles = mutableSetOf("ROLE_USER") // Ignorar roles fornecidas e usar sempre o padrão
         )
         val savedUser = userRepository.save(user)
         return savedUser.toResponse()
