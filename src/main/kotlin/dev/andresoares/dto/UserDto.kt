@@ -25,6 +25,9 @@ data class UserCreateRequest(
     @field:ValidPassword(message = "Field 'password' must contain at least one letter, one number, and one special character")
     @field:NoWhitespace(message = "Field 'password' cannot contain whitespace characters")
     var password: String?
+    // NOTE: Roles are NOT assignable during registration to prevent privilege escalation
+    // All new users automatically receive ROLE_USER
+    // Use admin endpoints to assign additional roles: POST /api/v1/admin/users/{id}/roles/{role}
 )
 
 data class UserUpdateRequest(
@@ -38,12 +41,15 @@ data class UserUpdateRequest(
     @field:ValidPassword(message = "Field 'password' must contain at least one letter, one number, and one special character")
     @field:NoWhitespace(message = "Field 'password' cannot contain whitespace characters")
     val password: String?
+    // NOTE: Roles are NOT updateable through this endpoint to prevent privilege escalation
+    // Use dedicated admin endpoints: POST/DELETE /api/v1/admin/users/{id}/roles/{role}
 )
 
 data class UserResponse(
     val id: Long,
     val name: String,
     val email: String,
+    val roles: Set<String>,
     val createdAt: String,
     val updatedAt: String
 )

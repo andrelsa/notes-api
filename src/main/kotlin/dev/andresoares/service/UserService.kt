@@ -30,8 +30,6 @@ interface UserService {
      */
     fun getAllUsers(pageable: Pageable): Page<UserResponse>
 
-    // ...existing code...
-
     /**
      * Busca um usuário específico por ID.
      * @param id Identificador do usuário
@@ -69,4 +67,33 @@ interface UserService {
      * @throws ResourceNotFoundException se usuário não for encontrado
      */
     fun deleteUser(id: Long)
+
+    /**
+     * Atualiza todas as roles de um usuário (substitui as existentes).
+     * @param userId Identificador do usuário
+     * @param roles Conjunto de roles a serem atribuídas
+     * @return Usuário atualizado em formato DTO
+     * @throws ResourceNotFoundException se usuário não for encontrado
+     * @throws InvalidRoleException se alguma role for inválida
+     */
+    fun updateUserRoles(userId: Long, roles: Set<String>): UserResponse
+
+    /**
+     * Adiciona uma role a um usuário (mantém as roles existentes).
+     * @param userId Identificador do usuário
+     * @param role Role a ser adicionada
+     * @return Usuário atualizado em formato DTO
+     * @throws ResourceNotFoundException se usuário não for encontrado
+     * @throws InvalidRoleException se a role for inválida
+     */
+    fun addRoleToUser(userId: Long, role: String): UserResponse
+
+    /**
+     * Remove uma role de um usuário.
+     * @param userId Identificador do usuário
+     * @param role Role a ser removida
+     * @return Usuário atualizado em formato DTO
+     * @throws ResourceNotFoundException se usuário não for encontrado
+     */
+    fun removeRoleFromUser(userId: Long, role: String): UserResponse
 }

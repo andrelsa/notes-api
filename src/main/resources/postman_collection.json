@@ -20,9 +20,219 @@
       "key": "userId",
       "value": "1",
       "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Save tokens to environment variables",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                  "    pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.user.id);",
+                  "    console.log(\"Tokens saved successfully\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"senha123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Authenticate user with email and password. Returns access token (valid for 1 hour) and refresh token (valid for 7 days).\n\n**Note:** This endpoint automatically saves the tokens to collection variables for use in other requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Save new tokens to environment variables",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                  "    pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+                  "    console.log(\"Tokens refreshed successfully\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            },
+            "description": "Refresh the access token using the refresh token. Returns new access token and refresh token.\n\n**Note:** This endpoint automatically updates the tokens in collection variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Clear tokens from environment variables",
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set(\"accessToken\", \"\");",
+                  "    pm.collectionVariables.set(\"refreshToken\", \"\");",
+                  "    console.log(\"Tokens cleared successfully\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            },
+            "description": "Logout and revoke the refresh token. This invalidates the current session.\n\n**Note:** This endpoint automatically clears the tokens from collection variables."
+          },
+          "response": []
+        }
+      ],
+      "description": "Authentication endpoints for login, token refresh, and logout. These endpoints do not require authentication."
+    },
+    {
+      "name": "Admin - Roles Management",
+      "item": [
+        {
+          "name": "Update User Roles (Replace All)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roles\": [\"ROLE_USER\", \"ROLE_ADMIN\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{userId}}", "roles"]
+            },
+            "description": "Substituir todas as roles de um usuário (requer ROLE_ADMIN).\n\n**Autenticação Obrigatória:** Sim - Requer ROLE_ADMIN\n\n**Roles disponíveis:** ROLE_USER, ROLE_ADMIN, ROLE_MANAGER, ROLE_VIEWER"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Role to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/roles/ROLE_MANAGER",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{userId}}", "roles", "ROLE_MANAGER"]
+            },
+            "description": "Adicionar uma role sem remover as existentes (requer ROLE_ADMIN).\n\n**Autenticação Obrigatória:** Sim - Requer ROLE_ADMIN\n\n**Exemplo:** Altere ROLE_MANAGER na URL para ROLE_ADMIN, etc."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Role from User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/roles/ROLE_MANAGER",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "{{userId}}", "roles", "ROLE_MANAGER"]
+            },
+            "description": "Remover uma role de um usuário (requer ROLE_ADMIN).\n\n**Autenticação Obrigatória:** Sim - Requer ROLE_ADMIN\n\n**Nota:** Não é possível remover ROLE_USER se for a única role."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints administrativos para gerenciar roles dos usuários. Todos requerem ROLE_ADMIN."
+    },
     {
       "name": "Notes",
       "item": [
@@ -30,13 +240,19 @@
           "name": "Get All Notes",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/notes",
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes"]
             },
-            "description": "Retrieve all notes from the database"
+            "description": "Retrieve all notes from the database.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -44,7 +260,13 @@
           "name": "Search Notes by Title",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/notes?title=Spring",
               "host": ["{{baseUrl}}"],
@@ -57,7 +279,7 @@
                 }
               ]
             },
-            "description": "Search notes by title (case-insensitive partial match)"
+            "description": "Search notes by title (case-insensitive partial match).\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -65,13 +287,19 @@
           "name": "Get Note by ID",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/notes/{{noteId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes", "{{noteId}}"]
             },
-            "description": "Retrieve a specific note by its ID"
+            "description": "Retrieve a specific note by its ID.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -83,6 +311,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -94,7 +327,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes"]
             },
-            "description": "Create a new note. Title is required, content is optional."
+            "description": "Create a new note. Title is required, content is optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -106,6 +339,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -117,7 +355,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes", "{{noteId}}"]
             },
-            "description": "Update an existing note. Both title and content are optional."
+            "description": "Update an existing note. Both title and content are optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -125,13 +363,19 @@
           "name": "Delete Note",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/notes/{{noteId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes", "{{noteId}}"]
             },
-            "description": "Delete a note by its ID"
+            "description": "Delete a note by its ID.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         }
@@ -145,13 +389,19 @@
           "name": "Get All Users",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/users",
               "host": ["{{baseUrl}}"],
               "path": ["api", "users"]
             },
-            "description": "Retrieve all users from the database"
+            "description": "Retrieve all users from the database.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -159,7 +409,13 @@
           "name": "Search Users by Name",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/users/search?name=João",
               "host": ["{{baseUrl}}"],
@@ -172,7 +428,7 @@
                 }
               ]
             },
-            "description": "Search users by name (case-insensitive partial match)"
+            "description": "Search users by name (case-insensitive partial match).\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -180,13 +436,19 @@
           "name": "Get User by ID",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/users/{{userId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "users", "{{userId}}"]
             },
-            "description": "Retrieve a specific user by its ID"
+            "description": "Retrieve a specific user by its ID.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -205,11 +467,11 @@
               "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"senha123456\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users"]
+              "path": ["api", "v1", "users"]
             },
-            "description": "Create a new user. Name, email and password are required. Password must be between 8 and 15 characters."
+            "description": "Create a new user (Registration). Name, email and password are required. Password must be between 8 and 15 characters.\n\n**Authentication Required:** No - This is a public endpoint for user registration."
           },
           "response": []
         },
@@ -221,6 +483,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -232,7 +499,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "users", "{{userId}}"]
             },
-            "description": "Update an existing user. All fields are optional."
+            "description": "Update an existing user. All fields are optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         },
@@ -240,13 +507,19 @@
           "name": "Delete User",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/users/{{userId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "users", "{{userId}}"]
             },
-            "description": "Delete a user by its ID"
+            "description": "Delete a user by its ID.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
           "response": []
         }
@@ -264,6 +537,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -275,7 +553,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes"]
             },
-            "description": "Create a note with only the required title field"
+            "description": "Create a note with only the required title field.\n\n**Authentication Required:** Yes"
           },
           "response": []
         },
@@ -287,6 +565,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -298,7 +581,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes"]
             },
-            "description": "Create a note with both title and content"
+            "description": "Create a note with both title and content.\n\n**Authentication Required:** Yes"
           },
           "response": []
         },
@@ -310,6 +593,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -321,7 +609,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes", "1"]
             },
-            "description": "Update only the title of a note"
+            "description": "Update only the title of a note.\n\n**Authentication Required:** Yes"
           },
           "response": []
         },
@@ -333,6 +621,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -344,7 +637,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes"]
             },
-            "description": "Example of validation error - title cannot be blank"
+            "description": "Example of validation error - title cannot be blank.\n\n**Authentication Required:** Yes"
           },
           "response": []
         },
@@ -352,13 +645,19 @@
           "name": "Not Found Example",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/notes/99999",
               "host": ["{{baseUrl}}"],
               "path": ["api", "notes", "99999"]
             },
-            "description": "Example of 404 Not Found error"
+            "description": "Example of 404 Not Found error.\n\n**Authentication Required:** Yes"
           },
           "response": []
         }
@@ -399,6 +698,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "body": {
@@ -410,7 +714,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "users", "1"]
             },
-            "description": "Update only the name of a user"
+            "description": "Update only the name of a user.\n\n**Authentication Required:** Yes"
           },
           "response": []
         },
@@ -487,13 +791,19 @@
           "name": "Not Found Example",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/users/99999",
               "host": ["{{baseUrl}}"],
               "path": ["api", "users", "99999"]
             },
-            "description": "Example of 404 Not Found error - user does not exist"
+            "description": "Example of 404 Not Found error - user does not exist.\n\n**Authentication Required:** Yes"
           },
           "response": []
         }

@@ -25,6 +25,14 @@ data class User(
     @Column(nullable = false)
     var password: String,
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "user_roles",
+        joinColumns = [JoinColumn(name = "user_id")]
+    )
+    @Column(name = "role")
+    var roles: MutableSet<String> = mutableSetOf("ROLE_USER"),
+
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
