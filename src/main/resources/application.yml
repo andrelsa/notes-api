@@ -25,7 +25,7 @@ server:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:mySecretKeyForJwtTokenThatShouldBeAtLeast256BitsLongForHS256Algorithm}
+  secret: ${JWT_SECRET:my-secret-key-for-development-and-tests-change-in-production-minimum-256-bits}
   access-token-expiration: 3600000    # 1 hora em milissegundos
   refresh-token-expiration: 604800000 # 7 dias em milissegundos
 

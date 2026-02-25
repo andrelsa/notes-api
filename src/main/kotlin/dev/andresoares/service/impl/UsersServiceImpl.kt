@@ -46,7 +46,7 @@ class UserServiceImpl(
             name = request.name!!,
             email = request.email!!,
             password = passwordEncoder.encode(request.password!!), // Criptografar senha
-            roles = request.roles?.toMutableSet() ?: mutableSetOf("ROLE_USER") // Usar roles fornecidas ou padrão
+            roles = mutableSetOf("ROLE_USER") // SECURITY: Always assign ROLE_USER only on registration
         )
         val savedUser = userRepository.save(user)
         return savedUser.toResponse()
@@ -60,7 +60,7 @@ class UserServiceImpl(
         request.name?.let { user.name = it }
         request.email?.let { user.email = it }
         request.password?.let { user.password = passwordEncoder.encode(it) } // Criptografar senha
-        request.roles?.let { user.roles = it.toMutableSet() } // Atualizar roles se fornecidas
+        // SECURITY: Roles should only be updated through dedicated admin endpoints to prevent privilege escalation
 
         val updatedUser = userRepository.save(user)
         return updatedUser.toResponse()
@@ -119,6 +119,11 @@ class UserServiceImpl(
     override fun removeRoleFromUser(userId: Long, role: String): UserResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { ResourceNotFoundException("User not found with id: $userId") }
+
+        // Validar se a role é válida antes de tentar remover
+        if (!UserRole.isValidRole(role)) {
+            throw InvalidRoleException("Invalid role: $role. Valid roles are: ${UserRole.getAllRoleNames().joinToString(", ")}")
+        }
 
         // Verificar se é a última role e se é ROLE_USER
         if (user.roles.size == 1 && user.roles.contains("ROLE_USER")) {

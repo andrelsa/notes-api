@@ -7,6 +7,8 @@ import dev.andresoares.dto.RefreshTokenRequest
 import dev.andresoares.model.User
 import dev.andresoares.repository.RefreshTokenRepository
 import dev.andresoares.repository.UserRepository
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,14 +52,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         // Fazer login
@@ -82,7 +84,7 @@ class AuthControllerIntegrationTest {
     fun `should fail authentication with invalid email`() {
         val loginRequest = LoginRequest(
             email = "naoexiste@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         mockMvc.perform(
@@ -99,7 +101,7 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         userRepository.save(user)
@@ -121,7 +123,7 @@ class AuthControllerIntegrationTest {
     fun `should fail authentication with invalid email format`() {
         val loginRequest = mapOf(
             "email" to "emailinvalido",
-            "password" to "senha123456"
+            "password" to "Senh@123456"
         )
 
         mockMvc.perform(
@@ -136,7 +138,7 @@ class AuthControllerIntegrationTest {
     fun `should fail authentication with blank email`() {
         val loginRequest = mapOf(
             "email" to "",
-            "password" to "senha123456"
+            "password" to "Senh@123456"
         )
 
         mockMvc.perform(
@@ -168,14 +170,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "Admin User",
             email = "admin@example.com",
-            password = passwordEncoder.encode("admin123456"),
+            password = passwordEncoder.encode("Admin@123456"),
             roles = mutableSetOf("ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER")
         )
         userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "admin@example.com",
-            password = "admin123456"
+            password = "Admin@123456"
         )
 
         mockMvc.perform(
@@ -194,14 +196,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         val savedUser = userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         // Fazer login para obter os tokens
@@ -215,9 +217,6 @@ class AuthControllerIntegrationTest {
 
         val loginResponse = objectMapper.readTree(loginResult.response.contentAsString)
         val refreshToken = loginResponse.get("refreshToken").asText()
-
-        // Esperar um pouco para garantir que o novo token será diferente
-        Thread.sleep(1000)
 
         // Renovar o token
         val refreshRequest = RefreshTokenRequest(refreshToken = refreshToken)
@@ -268,14 +267,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         // Fazer login
@@ -336,14 +335,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         // Fazer login
@@ -383,14 +382,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         val savedUser = userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         // Fazer login
@@ -403,8 +402,8 @@ class AuthControllerIntegrationTest {
 
         // Verificar se o refresh token foi criado no banco
         val refreshTokens = refreshTokenRepository.findByUser(savedUser)
-        assert(refreshTokens.isNotEmpty()) { "Refresh token should be created in database" }
-        assert(!refreshTokens[0].revoked) { "Refresh token should not be revoked" }
+        assertTrue(refreshTokens.isNotEmpty(), "Refresh token should be created in database")
+        assertFalse(refreshTokens[0].revoked, "Refresh token should not be revoked")
     }
 
     @Test
@@ -413,14 +412,14 @@ class AuthControllerIntegrationTest {
         val user = User(
             name = "João Silva",
             email = "joao.silva@example.com",
-            password = passwordEncoder.encode("senha123456"),
+            password = passwordEncoder.encode("Senh@123456"),
             roles = mutableSetOf("ROLE_USER")
         )
         val savedUser = userRepository.save(user)
 
         val loginRequest = LoginRequest(
             email = "joao.silva@example.com",
-            password = "senha123456"
+            password = "Senh@123456"
         )
 
         // Fazer login
@@ -448,8 +447,8 @@ class AuthControllerIntegrationTest {
 
         // Verificar se o token antigo foi revogado
         val oldToken = refreshTokenRepository.findByToken(oldRefreshToken)
-        assert(oldToken.isPresent) { "Old refresh token should exist in database" }
-        assert(oldToken.get().revoked) { "Old refresh token should be revoked" }
+        assertTrue(oldToken.isPresent, "Old refresh token should exist in database")
+        assertTrue(oldToken.get().revoked, "Old refresh token should be revoked")
     }
 }
 

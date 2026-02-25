@@ -45,6 +45,7 @@ class JwtTokenProvider(
         return Jwts.builder()
             .subject(userId.toString())
             .claim("type", "refresh")
+            .claim("jti", UUID.randomUUID().toString()) // Add UUID for uniqueness
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(secretKey)

@@ -67,7 +67,7 @@ class AuthServiceImpl(
 
         // Buscar refresh token no banco
         val refreshToken = refreshTokenRepository.findByToken(request.refreshToken)
-            .orElseThrow { ResourceNotFoundException("Refresh token not found") }
+            .orElseThrow { BadCredentialsException("Invalid refresh token") }
 
         // Verificar se está revogado
         if (refreshToken.revoked) {
