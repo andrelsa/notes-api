@@ -50,7 +50,7 @@ Body:
 
 ### **Passo 4: Criar uma Nota (Testando Token)**
 ```
-Endpoint: POST /api/notes
+Endpoint: POST /api/v1/notes
 Body:
 {
   "title": "Minha Primeira Nota",
@@ -62,7 +62,7 @@ Body:
 
 ### **Passo 5: Listar Notas**
 ```
-Endpoint: GET /api/notes
+Endpoint: GET /api/v1/notes
 ```
 **Resposta esperada:** 200 OK com lista de notas
 
@@ -147,19 +147,19 @@ Body:
 - **Verifica:** Proteção contra credenciais inválidas
 
 ### ✅ **Teste 3: Acessar Endpoint Protegido COM Token**
-- **Endpoint:** GET /api/notes
+- **Endpoint:** GET /api/v1/notes
 - **Header:** Authorization: Bearer {token}
 - **Esperado:** 200 OK + dados
 - **Verifica:** Autorização funciona
 
 ### ✅ **Teste 4: Acessar Endpoint Protegido SEM Token**
-- **Endpoint:** GET /api/notes
+- **Endpoint:** GET /api/v1/notes
 - **Header:** SEM Authorization
 - **Esperado:** 401 Unauthorized
 - **Verifica:** Endpoints estão protegidos
 
 ### ✅ **Teste 5: Acessar com Token Inválido**
-- **Endpoint:** GET /api/notes
+- **Endpoint:** GET /api/v1/notes
 - **Header:** Authorization: Bearer token_invalido
 - **Esperado:** 401 Unauthorized
 - **Verifica:** Validação de token funciona
