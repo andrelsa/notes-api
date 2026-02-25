@@ -434,8 +434,6 @@ class AuthControllerIntegrationTest {
         val loginResponse = objectMapper.readTree(loginResult.response.contentAsString)
         val oldRefreshToken = loginResponse.get("refreshToken").asText()
 
-        Thread.sleep(1000)
-
         // Renovar token
         val refreshRequest = RefreshTokenRequest(refreshToken = oldRefreshToken)
         mockMvc.perform(
