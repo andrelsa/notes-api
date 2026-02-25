@@ -334,7 +334,7 @@
         {
           "name": "Update Note",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -351,9 +351,9 @@
               "raw": "{\n  \"title\": \"Título Atualizado\",\n  \"content\": \"Conteúdo atualizado da nota\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "raw": "{{baseUrl}}/api/v1/notes/{{noteId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes", "{{noteId}}"]
+              "path": ["api", "v1", "notes", "{{noteId}}"]
             },
             "description": "Update an existing note. Both title and content are optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
