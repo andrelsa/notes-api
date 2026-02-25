@@ -179,7 +179,7 @@ Body:
 ### ✅ **Teste 8: Usar Refresh Token Após Logout**
 - **Endpoint:** POST /api/v1/auth/refresh
 - **Body:** { "refreshToken": "{refresh_token_revogado}" }
-- **Esperado:** 404 Not Found
+- **Esperado:** 401 Unauthorized
 - **Verifica:** Token revogado não pode ser usado
 
 ---
