@@ -20,13 +20,17 @@ data class Note(
     var content: String,
 
     /**
-     * ID do usuário proprietário desta nota.
-     * Relacionamento ManyToOne: um usuário pode ter muitas notas,
-     * mas cada nota pertence a exatamente um usuário.
+     * Usuário proprietário desta nota.
+     * Relacionamento ManyToOne: um usuário pode ter muitas notas.
+     *
+     * Notas criadas via API sempre possuem um proprietário atribuído.
+     * O valor null indica notas legadas ou criadas fora do fluxo padrão.
+     * A lógica de autorização nega acesso a notas sem proprietário para
+     * usuários não-administradores.
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    var user: User,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = true)
+    var user: User? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
