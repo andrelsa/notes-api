@@ -38,8 +38,7 @@ class NoteServiceImpl(
         // MANAGER e ADMIN podem ver qualquer nota
         if (!securityUtils.isAdmin() && !securityUtils.isManager()) {
             val currentUserId = securityUtils.getCurrentUserId()
-            val noteOwnerId = note.user?.id
-            if (noteOwnerId == null || noteOwnerId != currentUserId) {
+            if (note.user.id != currentUserId) {
                 throw AccessDeniedException("You don't have permission to view this note")
             }
         }
@@ -54,7 +53,7 @@ class NoteServiceImpl(
         }
         // USER e VIEWER buscam apenas nas suas próprias notas
         val currentUserId = securityUtils.getCurrentUserId()
-        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)
+        return noteRepository.findByUser_IdAndTitleContainingIgnoreCase(currentUserId, title)
             .map { it.toResponse() }
     }
 
@@ -82,8 +81,7 @@ class NoteServiceImpl(
         // MANAGER e USER só podem editar suas próprias notas
         if (!securityUtils.isAdmin()) {
             val currentUserId = securityUtils.getCurrentUserId()
-            val noteOwnerId = note.user?.id
-            if (noteOwnerId != null && noteOwnerId != currentUserId) {
+            if (note.user.id != currentUserId) {
                 throw AccessDeniedException("You don't have permission to update this note")
             }
         }
@@ -104,8 +102,7 @@ class NoteServiceImpl(
         // MANAGER e USER só podem deletar suas próprias notas
         if (!securityUtils.isAdmin()) {
             val currentUserId = securityUtils.getCurrentUserId()
-            val noteOwnerId = note.user?.id
-            if (noteOwnerId != null && noteOwnerId != currentUserId) {
+            if (note.user.id != currentUserId) {
                 throw AccessDeniedException("You don't have permission to delete this note")
             }
         }
@@ -115,12 +112,12 @@ class NoteServiceImpl(
 
     override fun getMyNotes(pageable: Pageable): Page<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
-        return noteRepository.findByUserId(currentUserId, pageable).map { it.toResponse() }
+        return noteRepository.findByUser_Id(currentUserId, pageable).map { it.toResponse() }
     }
 
     override fun searchMyNotesByTitle(title: String): List<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
-        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)
+        return noteRepository.findByUser_IdAndTitleContainingIgnoreCase(currentUserId, title)
             .map { it.toResponse() }
     }
 
@@ -128,7 +125,7 @@ class NoteServiceImpl(
         id = id!!,
         title = title,
         content = content,
-        userId = user?.id,
+        userId = user.id,
         createdAt = createdAt.toString(),
         updatedAt = updatedAt.toString()
     )
