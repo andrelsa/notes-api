@@ -39,7 +39,7 @@ class NoteServiceImpl(
         if (!securityUtils.isAdmin() && !securityUtils.isManager()) {
             val currentUserId = securityUtils.getCurrentUserId()
             val noteOwnerId = note.user?.id
-            if (noteOwnerId != null && noteOwnerId != currentUserId) {
+            if (noteOwnerId == null || noteOwnerId != currentUserId) {
                 throw AccessDeniedException("You don't have permission to view this note")
             }
         }
