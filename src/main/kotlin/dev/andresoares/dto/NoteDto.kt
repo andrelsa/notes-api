@@ -28,6 +28,7 @@ data class NoteResponse(
     val id: Long,
     val title: String,
     val content: String,
+    val userId: Long?,
     val createdAt: String,
     val updatedAt: String
 )

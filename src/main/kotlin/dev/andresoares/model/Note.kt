@@ -19,6 +19,15 @@ data class Note(
     @Column(columnDefinition = "TEXT", nullable = false)
     var content: String,
 
+    /**
+     * ID do usuário proprietário desta nota.
+     * Relacionamento ManyToOne: um usuário pode ter muitas notas,
+     * mas cada nota pertence a exatamente um usuário.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    var user: User,
+
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 

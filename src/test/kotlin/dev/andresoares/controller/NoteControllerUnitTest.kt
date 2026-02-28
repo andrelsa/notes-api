@@ -40,8 +40,8 @@ class NoteControllerUnitTest {
     fun `getAllNotes deve retornar lista de notas quando nao ha filtro`() {
         // Arrange
         val expectedNotes = listOf(
-            NoteResponse(1L, "Nota 1", "Conteúdo 1", "2026-01-30T10:00:00", "2026-01-30T10:00:00"),
-            NoteResponse(2L, "Nota 2", "Conteúdo 2", "2026-01-30T11:00:00", "2026-01-30T11:00:00")
+            NoteResponse(1L, "Nota 1", "Conteúdo 1", null, "2026-01-30T10:00:00", "2026-01-30T10:00:00"),
+            NoteResponse(2L, "Nota 2", "Conteúdo 2", null, "2026-01-30T11:00:00", "2026-01-30T11:00:00")
         )
         val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"))
         val page = PageImpl(expectedNotes, pageable, expectedNotes.size.toLong())
@@ -61,7 +61,7 @@ class NoteControllerUnitTest {
         // Arrange
         val title = "Reunião"
         val expectedNotes = listOf(
-            NoteResponse(1L, "Reunião Sprint", "Conteúdo", "2026-01-30T10:00:00", "2026-01-30T10:00:00")
+            NoteResponse(1L, "Reunião Sprint", "Conteúdo", null, "2026-01-30T10:00:00", "2026-01-30T10:00:00")
         )
         every { NoteService.searchNotesByTitle(title) } returns expectedNotes
 
@@ -77,7 +77,7 @@ class NoteControllerUnitTest {
     fun `getNoteById deve retornar nota quando id existe`() {
         // Arrange
         val noteId = 1L
-        val expectedNote = NoteResponse(noteId, "Nota 1", "Conteúdo", "2026-01-30T10:00:00", "2026-01-30T10:00:00")
+        val expectedNote = NoteResponse(noteId, "Nota 1", "Conteúdo", null, "2026-01-30T10:00:00", "2026-01-30T10:00:00")
         every { NoteService.getNoteById(noteId) } returns expectedNote
 
         // Act
@@ -93,7 +93,7 @@ class NoteControllerUnitTest {
     fun `createNote deve retornar nota criada com status CREATED`() {
         // Arrange
         val request = NoteCreateRequest(title = "Nova Nota", content = "Novo Conteúdo")
-        val expectedNote = NoteResponse(1L, "Nova Nota", "Novo Conteúdo", "2026-01-30T10:00:00", "2026-01-30T10:00:00")
+        val expectedNote = NoteResponse(1L, "Nova Nota", "Novo Conteúdo", 1L, "2026-01-30T10:00:00", "2026-01-30T10:00:00")
         every { NoteService.createNote(request) } returns expectedNote
 
         // Act
@@ -110,7 +110,7 @@ class NoteControllerUnitTest {
         // Arrange
         val noteId = 1L
         val request = NoteUpdateRequest(title = "Título Atualizado", content = "Conteúdo Atualizado")
-        val expectedNote = NoteResponse(noteId, "Título Atualizado", "Conteúdo Atualizado", "2026-01-30T10:00:00", "2026-01-30T11:00:00")
+        val expectedNote = NoteResponse(noteId, "Título Atualizado", "Conteúdo Atualizado", 1L, "2026-01-30T10:00:00", "2026-01-30T11:00:00")
         every { NoteService.updateNote(noteId, request) } returns expectedNote
 
         // Act

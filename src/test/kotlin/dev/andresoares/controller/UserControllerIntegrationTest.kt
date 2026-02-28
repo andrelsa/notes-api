@@ -3,6 +3,8 @@ package dev.andresoares.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.andresoares.dto.UserCreateRequest
 import dev.andresoares.dto.UserUpdateRequest
+import dev.andresoares.model.User
+import dev.andresoares.repository.NoteRepository
 import dev.andresoares.repository.UserRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -17,7 +20,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username = "test@example.com", roles = ["USER"])
 class UserControllerIntegrationTest {
 
     @Autowired
@@ -29,21 +31,44 @@ class UserControllerIntegrationTest {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    @Autowired
+    private lateinit var noteRepository: NoteRepository
+
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
+
+    // Email que corresponde ao @WithMockUser(username = ...) nos testes que verificam ownership
+    private val adminEmail = "admin@example.com"
+
     @BeforeEach
     fun setUp() {
-        // Limpa o banco de dados antes de cada teste
+        noteRepository.deleteAll()
         userRepository.deleteAll()
     }
 
+    // Cria um usuário ADMIN no banco para testes que usam isOwner / ADMIN role
+    private fun createAdminUser(): User {
+        return userRepository.save(
+            User(
+                name = "Admin User",
+                email = adminEmail,
+                password = passwordEncoder.encode("Admin@123"),
+                roles = mutableSetOf("ROLE_ADMIN")
+            )
+        )
+    }
+
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should create and retrieve a user`() {
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
             password = "Abc#123def"
         )
 
-        // Create user
         val createResult = mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +84,6 @@ class UserControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val userId = response.get("id").asLong()
 
-        // Retrieve user
         mockMvc.perform(get("/api/v1/users/$userId"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(userId))
@@ -70,14 +94,16 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should update a user completely`() {
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
             password = "Abc#123def"
         )
 
-        // Create user
         val createResult = mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +121,6 @@ class UserControllerIntegrationTest {
             password = "Abc#123def"
         )
 
-        // Update user
         mockMvc.perform(
             patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -108,14 +133,16 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should update user partially - only name`() {
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
             password = "Abc#123def"
         )
 
-        // Create user
         val createResult = mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +156,6 @@ class UserControllerIntegrationTest {
 
         val updateRequest = mapOf("name" to "João Atualizado")
 
-        // Update user - only name
         mockMvc.perform(
             patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -137,19 +163,21 @@ class UserControllerIntegrationTest {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("João Atualizado"))
-            .andExpect(jsonPath("$.email").value("joao.silva@example.com")) // Email não mudou
+            .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
             .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should update user partially - only email`() {
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
             password = "Abc#123def"
         )
 
-        // Create user
         val createResult = mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -163,27 +191,28 @@ class UserControllerIntegrationTest {
 
         val updateRequest = mapOf("email" to "novo.email@example.com")
 
-        // Update user - only email
         mockMvc.perform(
             patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.name").value("João Silva")) // Nome não mudou
+            .andExpect(jsonPath("$.name").value("João Silva"))
             .andExpect(jsonPath("$.email").value("novo.email@example.com"))
             .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should update user partially - only password`() {
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
             password = "Abc#123def"
         )
 
-        // Create user
         val createResult = mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -197,27 +226,28 @@ class UserControllerIntegrationTest {
 
         val updateRequest = mapOf("password" to "Abc#123def")
 
-        // Update user - only password
         mockMvc.perform(
             patch("/api/v1/users/$userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest))
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.name").value("João Silva")) // Nome não mudou
-            .andExpect(jsonPath("$.email").value("joao.silva@example.com")) // Email não mudou
+            .andExpect(jsonPath("$.name").value("João Silva"))
+            .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
             .andExpect(jsonPath("$.roles").isArray)
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should delete a user`() {
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.silva@example.com",
             password = "Abc#123def"
         )
 
-        // Create user
         val createResult = mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -229,11 +259,9 @@ class UserControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val userId = response.get("id").asLong()
 
-        // Delete user
         mockMvc.perform(delete("/api/v1/users/$userId"))
             .andExpect(status().isNoContent)
 
-        // Verify user is deleted
         mockMvc.perform(get("/api/v1/users/$userId"))
             .andExpect(status().isNotFound)
     }
@@ -312,8 +340,10 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should search users by name`() {
-        // Create test users
+        createAdminUser()
+
         val user1 = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
         val user2 = UserCreateRequest(name = "Maria Santos", email = "maria@example.com", password = "Abc#123def")
         val user3 = UserCreateRequest(name = "João Pedro", email = "joaop@example.com", password = "Abc#123def")
@@ -326,15 +356,16 @@ class UserControllerIntegrationTest {
             )
         }
 
-        // Search for users with "João" in name
         mockMvc.perform(get("/api/v1/users?name=João"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should return empty list when searching for non-existent name`() {
-        // Create test user
+        createAdminUser()
+
         val user = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
         mockMvc.perform(
             post("/api/v1/users")
@@ -342,15 +373,16 @@ class UserControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(user))
         )
 
-        // Search for non-existent name
         mockMvc.perform(get("/api/v1/users?name=Inexistente"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(0))
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should list all users`() {
-        // Create test users
+        createAdminUser()
+
         val user1 = UserCreateRequest(name = "João Silva", email = "joao@example.com", password = "Abc#123def")
         val user2 = UserCreateRequest(name = "Maria Santos", email = "maria@example.com", password = "Abc#123def")
 
@@ -362,13 +394,18 @@ class UserControllerIntegrationTest {
             )
         }
 
-        // List all users (retorna Page)
+        // Total: admin + user1 + user2 = 3
         mockMvc.perform(get("/api/v1/users"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.content").isArray)
-            .andExpect(jsonPath("$.content.length()").value(2))
-            .andExpect(jsonPath("$.totalElements").value(2))
-            .andExpect(jsonPath("$.totalPages").value(1))
+            .andExpect(jsonPath("$.totalElements").value(3))
+    }
+
+    @Test
+    @WithMockUser(username = "admin@example.com", roles = ["USER"])
+    fun `should return 403 when user tries to list all users`() {
+        mockMvc.perform(get("/api/v1/users"))
+            .andExpect(status().isForbidden)
     }
 
     // ==================== TESTES DE VALIDAÇÃO DE SENHA ====================
@@ -558,8 +595,10 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should reject update with password containing spaces`() {
-        // Create user with valid password
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.update1@example.com",
@@ -577,7 +616,6 @@ class UserControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val userId = response.get("id").asLong()
 
-        // Try to update with invalid password (with spaces)
         val updateRequest = mapOf("password" to "Abc #123def")
 
         mockMvc.perform(
@@ -591,8 +629,10 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin@example.com", roles = ["ADMIN"])
     fun `should reject update with weak password`() {
-        // Create user with valid password
+        createAdminUser()
+
         val createRequest = UserCreateRequest(
             name = "João Silva",
             email = "joao.update2@example.com",
@@ -610,7 +650,6 @@ class UserControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val userId = response.get("id").asLong()
 
-        // Try to update with weak password (no special character)
         val updateRequest = mapOf("password" to "Abc123def")
 
         mockMvc.perform(

@@ -8,6 +8,7 @@ import dev.andresoares.exception.ResourceNotFoundException
 import dev.andresoares.model.User
 import dev.andresoares.model.UserRole
 import dev.andresoares.repository.UserRepository
+import dev.andresoares.security.SecurityUtils
 import dev.andresoares.service.UserService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val securityUtils: SecurityUtils
 ) : UserService {
 
     override fun getAllUsers(): List<UserResponse> {
@@ -139,6 +141,11 @@ class UserServiceImpl(
 
         val updatedUser = userRepository.save(user)
         return updatedUser.toResponse()
+    }
+
+    override fun isOwner(userId: Long): Boolean {
+        val currentUserId = securityUtils.getCurrentUserId()
+        return currentUserId == userId
     }
 
     private fun User.toResponse() = UserResponse(

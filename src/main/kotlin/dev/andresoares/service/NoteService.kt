@@ -14,6 +14,12 @@ import org.springframework.data.domain.Pageable
  * - Facilidade para testes (mocks/stubs)
  * - Inversão de dependência (SOLID)
  * - Possibilidade de múltiplas implementações
+ *
+ * Regras de autorização por role:
+ * - ROLE_ADMIN   → acesso total: gerencia todas as notas
+ * - ROLE_MANAGER → pode ver todas as notas; edita/deleta somente as próprias
+ * - ROLE_USER    → cria, vê, edita e deleta apenas as próprias notas
+ * - ROLE_VIEWER  → somente leitura
  */
 interface NoteService {
 
@@ -29,8 +35,6 @@ interface NoteService {
      * @return Página de notas em formato DTO
      */
     fun getAllNotes(pageable: Pageable): Page<NoteResponse>
-
-    // ...existing code...
 
     /**
      * Busca uma nota específica por ID.
@@ -48,14 +52,15 @@ interface NoteService {
     fun searchNotesByTitle(title: String): List<NoteResponse>
 
     /**
-     * Cria uma nova nota.
+     * Cria uma nova nota associada ao usuário autenticado.
      * @param request Dados para criação da nota
      * @return Nota criada em formato DTO
      */
     fun createNote(request: NoteCreateRequest): NoteResponse
 
     /**
-     * Atualiza uma nota existente.
+     * Atualiza uma nota existente. Valida se o usuário autenticado tem permissão
+     * (proprietário da nota, ADMIN ou MANAGER se for a sua).
      * @param id Identificador da nota a ser atualizada
      * @param request Dados para atualização da nota
      * @return Nota atualizada em formato DTO
@@ -64,9 +69,24 @@ interface NoteService {
     fun updateNote(id: Long, request: NoteUpdateRequest): NoteResponse
 
     /**
-     * Deleta uma nota por ID.
+     * Deleta uma nota por ID. Valida se o usuário autenticado tem permissão
+     * (proprietário da nota ou ADMIN).
      * @param id Identificador da nota a ser deletada
      * @throws ResourceNotFoundException se a nota não for encontrada
      */
     fun deleteNote(id: Long)
+
+    /**
+     * Retorna todas as notas do usuário autenticado com paginação e ordenação.
+     * @param pageable Configurações de paginação e ordenação
+     * @return Página de notas do usuário em formato DTO
+     */
+    fun getMyNotes(pageable: Pageable): Page<NoteResponse>
+
+    /**
+     * Retorna todas as notas do usuário autenticado por título (case-insensitive).
+     * @param title Texto para busca no título
+     * @return Lista de notas do usuário que contêm o título buscado
+     */
+    fun searchMyNotesByTitle(title: String): List<NoteResponse>
 }
