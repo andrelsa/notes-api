@@ -11,6 +11,6 @@ interface NoteRepository : JpaRepository<Note, Long> {
     fun findByTitleContainingIgnoreCase(title: String): List<Note>
 
     // Queries para notas do usuário (ownership)
-    fun findByUserId(userId: Long, pageable: Pageable): Page<Note>
-    fun findByUserIdAndTitleContainingIgnoreCase(userId: Long, title: String): List<Note>
+    fun findByUser_Id(userId: Long, pageable: Pageable): Page<Note>
+    fun findByUser_IdAndTitleContainingIgnoreCase(userId: Long, title: String): List<Note>
 }
