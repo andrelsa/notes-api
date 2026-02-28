@@ -96,4 +96,12 @@ interface UserService {
      * @throws ResourceNotFoundException se usuário não for encontrado
      */
     fun removeRoleFromUser(userId: Long, role: String): UserResponse
+
+    /**
+     * Verifica se o usuário autenticado é o proprietário do recurso.
+     * Usado pelo @PreAuthorize nas expressions SpEL.
+     * @param userId Identificador do usuário a verificar
+     * @return true se o usuário autenticado for o mesmo que userId
+     */
+    fun isOwner(userId: Long): Boolean
 }

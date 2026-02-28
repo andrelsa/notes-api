@@ -40,4 +40,14 @@ class CustomUserDetailsService(
             .authorities(authorities) // Roles dinâmicas do banco
             .build()
     }
+
+    /**
+     * Retorna o ID do usuário a partir do email.
+     * Usado pelo SecurityUtils para obter o ID do usuário autenticado.
+     */
+    fun getUserIdByEmail(email: String): Long {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { UsernameNotFoundException("User not found with email: $email") }
+        return user.id ?: throw UsernameNotFoundException("User id is null for email: $email")
+    }
 }

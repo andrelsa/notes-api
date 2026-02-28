@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.access.AccessDeniedException as SpringAccessDeniedException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.validation.FieldError
 import org.springframework.web.HttpMediaTypeNotSupportedException
@@ -538,6 +539,28 @@ class GlobalExceptionHandler {
             .build()
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse)
+    }
+
+    /**
+     * Trata exceções de acesso negado lançadas pelo Spring Security (@PreAuthorize, hasRole, etc.)
+     * HTTP Status: 403 FORBIDDEN
+     */
+    @ExceptionHandler(SpringAccessDeniedException::class)
+    fun handleSpringAccessDeniedException(
+        ex: SpringAccessDeniedException,
+        request: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        logger.warn("Access denied by Spring Security: ${ex.message}")
+
+        val errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.FORBIDDEN.value())
+            .error(HttpStatus.FORBIDDEN.reasonPhrase)
+            .message("You don't have permission to access this resource")
+            .path(request.requestURI)
+            .traceId(generateTraceId())
+            .build()
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse)
     }
 
     /**

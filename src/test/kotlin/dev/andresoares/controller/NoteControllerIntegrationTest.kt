@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username = "test@example.com", roles = ["USER"])
 class NoteControllerIntegrationTest {
 
     @Autowired
@@ -34,23 +34,31 @@ class NoteControllerIntegrationTest {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
+
+    // O email deve bater com o @WithMockUser(username = ...) de cada teste
+    private val testUserEmail = "test@example.com"
+
     @BeforeEach
     fun setUp() {
-        // Limpa o banco de dados antes de cada teste
         noteRepository.deleteAll()
         userRepository.deleteAll()
 
-        // Cria um usuário padrão para os testes
+        // Cria um usuário com email idêntico ao @WithMockUser(username) para que
+        // SecurityUtils.getCurrentUserId() consiga encontrar o usuário no banco
         userRepository.save(
             User(
                 name = "Test User",
-                email = "test@notesapi.com",
-                password = "Test@123"
+                email = testUserEmail,
+                password = passwordEncoder.encode("Test@123"),
+                roles = mutableSetOf("ROLE_USER")
             )
         )
     }
 
     @Test
+    @WithMockUser(username = "test@example.com", roles = ["USER"])
     fun `should create and retrieve a note`() {
         val createRequest = NoteCreateRequest(
             title = "Test Note",
@@ -71,7 +79,7 @@ class NoteControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val noteId = response.get("id").asLong()
 
-        // Retrieve note
+        // Retrieve note — USER pode ver suas próprias notas
         mockMvc.perform(get("/api/v1/notes/$noteId"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(noteId))
@@ -79,13 +87,13 @@ class NoteControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "test@example.com", roles = ["USER"])
     fun `should update a note`() {
         val createRequest = NoteCreateRequest(
             title = "Original Title",
             content = "Original Content"
         )
 
-        // Create note
         val createResult = mockMvc.perform(
             post("/api/v1/notes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +110,6 @@ class NoteControllerIntegrationTest {
             content = "Updated Content"
         )
 
-        // Update note
         mockMvc.perform(
             patch("/api/v1/notes/$noteId")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -114,13 +121,13 @@ class NoteControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "test@example.com", roles = ["USER"])
     fun `should delete a note`() {
         val createRequest = NoteCreateRequest(
             title = "Note to Delete",
             content = "This note will be deleted"
         )
 
-        // Create note
         val createResult = mockMvc.perform(
             post("/api/v1/notes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,16 +139,15 @@ class NoteControllerIntegrationTest {
         val response = objectMapper.readTree(createResult.response.contentAsString)
         val noteId = response.get("id").asLong()
 
-        // Delete note
         mockMvc.perform(delete("/api/v1/notes/$noteId"))
             .andExpect(status().isNoContent)
 
-        // Verify note is deleted
         mockMvc.perform(get("/api/v1/notes/$noteId"))
             .andExpect(status().isNotFound)
     }
 
     @Test
+    @WithMockUser(username = "test@example.com", roles = ["USER"])
     fun `should return validation error when title is blank`() {
         val createRequest = mapOf("title" to "", "content" to "Content")
 
@@ -157,7 +163,8 @@ class NoteControllerIntegrationTest {
     }
 
     @Test
-    fun `should search notes by title`() {
+    @WithMockUser(username = "test@example.com", roles = ["ADMIN"])
+    fun `should search notes by title as admin`() {
         // Create test notes
         val note1 = NoteCreateRequest(title = "Spring Boot Tutorial", content = "Content 1")
         val note2 = NoteCreateRequest(title = "Kotlin Guide", content = "Content 2")
@@ -171,9 +178,54 @@ class NoteControllerIntegrationTest {
             )
         }
 
-        // Search for notes with "Spring" in title
+        // ADMIN can search across all notes
         mockMvc.perform(get("/api/v1/notes?title=Spring"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = ["USER"])
+    fun `should search my notes by title as user`() {
+        // Create test notes
+        val note1 = NoteCreateRequest(title = "Spring Boot Tutorial", content = "Content 1")
+        val note2 = NoteCreateRequest(title = "Kotlin Guide", content = "Content 2")
+        val note3 = NoteCreateRequest(title = "Spring Data JPA", content = "Content 3")
+
+        listOf(note1, note2, note3).forEach { request ->
+            mockMvc.perform(
+                post("/api/v1/notes")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request))
+            )
+        }
+
+        // USER searches only in their own notes via /me endpoint
+        mockMvc.perform(get("/api/v1/notes/me?title=Spring"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.length()").value(2))
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = ["VIEWER"])
+    fun `should return 403 when viewer tries to create a note`() {
+        val createRequest = NoteCreateRequest(
+            title = "Forbidden Note",
+            content = "Viewer cannot create notes"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/notes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+        )
+            .andExpect(status().isForbidden)
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = ["USER"])
+    fun `should return 403 when user tries to view all notes`() {
+        mockMvc.perform(get("/api/v1/notes"))
+            .andExpect(status().isForbidden)
     }
 }

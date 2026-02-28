@@ -10,13 +10,29 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
+/**
+ * Controller de usuários com controle de autorização baseado em roles.
+ *
+ * Regras de acesso:
+ * - GET /api/v1/users       → ADMIN (lista todos os usuários)
+ * - GET /api/v1/users/{id}  → ADMIN ou próprio usuário
+ * - POST /api/v1/users      → público (cadastro)
+ * - PATCH /api/v1/users/{id}→ ADMIN ou próprio usuário
+ * - DELETE /api/v1/users/{id}→ ADMIN apenas
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 class UserController(private val userService: UserService) {
 
+    /**
+     * Lista todos os usuários.
+     * Apenas ADMIN pode listar todos os usuários.
+     */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsers(
         @RequestParam(required = false) name: String?,
         @RequestParam(defaultValue = "0") page: Int,
@@ -24,13 +40,11 @@ class UserController(private val userService: UserService) {
         @RequestParam(defaultValue = "id") sortBy: String,
         @RequestParam(defaultValue = "asc") direction: String
     ): ResponseEntity<*> {
-        // Se há filtro de nome, retorna lista sem paginação
         if (name != null) {
             val users = userService.searchUsersByName(name)
             return ResponseEntity.ok(users)
         }
 
-        // Sem filtro, retorna com paginação
         val sortDirection = if (direction.equals("desc", ignoreCase = true)) {
             Sort.Direction.DESC
         } else {
@@ -41,19 +55,35 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(usersPage)
     }
 
+    /**
+     * Busca um usuário por ID.
+     * ADMIN pode ver qualquer usuário.
+     * Usuário autenticado pode ver seu próprio perfil.
+     */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @userService.isOwner(#id)")
     fun getUserById(@PathVariable id: Long): ResponseEntity<UserResponse> {
         val user = userService.getUserById(id)
         return ResponseEntity.ok(user)
     }
 
+    /**
+     * Cria (cadastra) um novo usuário.
+     * Endpoint público — sem autenticação.
+     */
     @PostMapping
     fun createUser(@Valid @RequestBody request: UserCreateRequest): ResponseEntity<UserResponse> {
         val user = userService.createUser(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(user)
     }
 
+    /**
+     * Atualiza um usuário existente (nome, email, senha).
+     * ADMIN pode atualizar qualquer usuário.
+     * Usuário autenticado pode atualizar apenas seus próprios dados.
+     */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @userService.isOwner(#id)")
     fun updateUser(
         @PathVariable id: Long,
         @Valid @RequestBody request: UserUpdateRequest
@@ -62,7 +92,12 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(user)
     }
 
+    /**
+     * Deleta um usuário.
+     * Apenas ADMIN pode deletar usuários.
+     */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> {
         userService.deleteUser(id)
         return ResponseEntity.noContent().build()
