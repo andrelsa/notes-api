@@ -48,30 +48,34 @@ class SecurityConfig(
             }
             .exceptionHandling { exceptions ->
                 // Retorna JSON 401 quando não autenticado
-                exceptions.authenticationEntryPoint { _, response, authException ->
+                exceptions.authenticationEntryPoint { request, response, authException ->
                     response.status = HttpStatus.UNAUTHORIZED.value()
                     response.contentType = MediaType.APPLICATION_JSON_VALUE
+                    response.characterEncoding = "UTF-8"
                     val body = mapOf(
                         "timestamp" to Instant.now().toString(),
                         "status" to 401,
                         "error" to "Unauthorized",
                         "message" to (authException.message ?: "Authentication is required"),
-                        "path" to "unknown"
+                        "path" to request.requestURI
                     )
                     response.writer.write(objectMapper.writeValueAsString(body))
+                    response.writer.flush()
                 }
                 // Retorna JSON 403 quando autenticado mas sem permissão (filter-level)
-                exceptions.accessDeniedHandler { _, response, _ ->
+                exceptions.accessDeniedHandler { request, response, _ ->
                     response.status = HttpStatus.FORBIDDEN.value()
                     response.contentType = MediaType.APPLICATION_JSON_VALUE
+                    response.characterEncoding = "UTF-8"
                     val body = mapOf(
                         "timestamp" to Instant.now().toString(),
                         "status" to 403,
                         "error" to "Forbidden",
                         "message" to "You don't have permission to access this resource",
-                        "path" to "unknown"
+                        "path" to request.requestURI
                     )
                     response.writer.write(objectMapper.writeValueAsString(body))
+                    response.writer.flush()
                 }
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
