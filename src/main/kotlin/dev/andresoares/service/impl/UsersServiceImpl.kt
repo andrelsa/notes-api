@@ -144,11 +144,8 @@ class UserServiceImpl(
     }
 
     override fun isOwner(userId: Long): Boolean {
-        return try {
-            securityUtils.getCurrentUserId() == userId
-        } catch (e: Exception) {
-            false
-        }
+        val currentUserId = securityUtils.getCurrentUserId()
+        return currentUserId == userId
     }
 
     private fun User.toResponse() = UserResponse(
