@@ -24,9 +24,9 @@ data class Note(
      * Relacionamento ManyToOne: um usuário pode ter muitas notas,
      * mas cada nota pertence a exatamente um usuário.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true)
-    var user: User? = null,
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    var user: User,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
