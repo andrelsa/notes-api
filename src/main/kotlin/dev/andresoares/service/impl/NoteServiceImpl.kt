@@ -38,8 +38,8 @@ class NoteServiceImpl(
         // MANAGER e ADMIN podem ver qualquer nota
         if (!securityUtils.isAdmin() && !securityUtils.isManager()) {
             val currentUserId = securityUtils.getCurrentUserId()
-            val noteOwnerId = note.user?.id
-            if (noteOwnerId == null || noteOwnerId != currentUserId) {
+            val noteOwnerId = note.user.id
+            if (noteOwnerId != currentUserId) {
                 throw AccessDeniedException("You don't have permission to view this note")
             }
         }
@@ -82,7 +82,7 @@ class NoteServiceImpl(
         // MANAGER e USER só podem editar suas próprias notas
         if (!securityUtils.isAdmin()) {
             val currentUserId = securityUtils.getCurrentUserId()
-            val noteOwnerId = note.user?.id
+            val noteOwnerId = note.user.id
             if (noteOwnerId != null && noteOwnerId != currentUserId) {
                 throw AccessDeniedException("You don't have permission to update this note")
             }
@@ -104,7 +104,7 @@ class NoteServiceImpl(
         // MANAGER e USER só podem deletar suas próprias notas
         if (!securityUtils.isAdmin()) {
             val currentUserId = securityUtils.getCurrentUserId()
-            val noteOwnerId = note.user?.id
+            val noteOwnerId = note.user.id
             if (noteOwnerId != null && noteOwnerId != currentUserId) {
                 throw AccessDeniedException("You don't have permission to delete this note")
             }
@@ -128,7 +128,7 @@ class NoteServiceImpl(
         id = id!!,
         title = title,
         content = content,
-        userId = user?.id,
+        userId = user.id,
         createdAt = createdAt.toString(),
         updatedAt = updatedAt.toString()
     )
