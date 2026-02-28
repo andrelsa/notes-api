@@ -83,7 +83,7 @@ class NoteServiceImpl(
         if (!securityUtils.isAdmin()) {
             val currentUserId = securityUtils.getCurrentUserId()
             val noteOwnerId = note.user?.id
-            if (noteOwnerId != null && noteOwnerId != currentUserId) {
+            if (noteOwnerId == null || noteOwnerId != currentUserId) {
                 throw AccessDeniedException("You don't have permission to update this note")
             }
         }
@@ -105,7 +105,7 @@ class NoteServiceImpl(
         if (!securityUtils.isAdmin()) {
             val currentUserId = securityUtils.getCurrentUserId()
             val noteOwnerId = note.user?.id
-            if (noteOwnerId != null && noteOwnerId != currentUserId) {
+            if (noteOwnerId == null || noteOwnerId != currentUserId) {
                 throw AccessDeniedException("You don't have permission to delete this note")
             }
         }
