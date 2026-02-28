@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 interface NoteRepository : JpaRepository<Note, Long> {
     fun findByTitleContainingIgnoreCase(title: String): List<Note>
 
-    // Queries para notas do usuário (ownership)
+    // Spring Data JPA: usa underscore para navegar em relacionamentos (user.id → User_Id)
     fun findByUser_Id(userId: Long, pageable: Pageable): Page<Note>
     fun findByUser_IdAndTitleContainingIgnoreCase(userId: Long, title: String): List<Note>
 }
