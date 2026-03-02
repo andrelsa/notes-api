@@ -58,7 +58,7 @@ class NoteServiceImpl(
         }
         // USER e VIEWER buscam apenas nas suas próprias notas
         val currentUserId = securityUtils.getCurrentUserId()
-        return noteRepository.findByUser_IdAndTitleContainingIgnoreCase(currentUserId, title)
+        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)
             .map { it.toResponse() }
     }
 
@@ -120,13 +120,13 @@ class NoteServiceImpl(
     @Transactional(readOnly = true)
     override fun getMyNotes(pageable: Pageable): Page<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
-        return noteRepository.findByUser_Id(currentUserId, pageable).map { it.toResponse() }
+        return noteRepository.findByUserId(currentUserId, pageable).map { it.toResponse() }
     }
 
     @Transactional(readOnly = true)
     override fun searchMyNotesByTitle(title: String): List<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
-        return noteRepository.findByUser_IdAndTitleContainingIgnoreCase(currentUserId, title)
+        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)
             .map { it.toResponse() }
     }
 
