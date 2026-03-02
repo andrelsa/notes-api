@@ -1,7 +1,9 @@
 package dev.andresoares.controller
 
 import dev.andresoares.dto.*
+import dev.andresoares.security.SecurityUtils
 import dev.andresoares.service.AuthService
+import dev.andresoares.service.UserService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -22,13 +24,17 @@ import org.springframework.http.HttpStatus
 class AuthControllerUnitTest {
 
     private lateinit var authService: AuthService
+    private lateinit var userService: UserService
+    private lateinit var securityUtils: SecurityUtils
     private lateinit var authController: AuthController
 
     @BeforeEach
     fun setup() {
         // Criando mock da interface AuthService
         authService = mockk<AuthService>()
-        authController = AuthController(authService)
+        userService = mockk<UserService>()
+        securityUtils = mockk<SecurityUtils>()
+        authController = AuthController(authService, userService, securityUtils)
     }
 
     @Test
@@ -150,5 +156,32 @@ class AuthControllerUnitTest {
         assertEquals("Logout successful", response.body?.message)
         verify(exactly = 1) { authService.logout(logoutRequest) }
     }
-}
 
+    @Test
+    fun `me deve retornar perfil do usuario autenticado`() {
+        // Arrange
+        val userId = 1L
+        val userResponse = UserResponse(
+            id = userId,
+            name = "João Silva",
+            email = "joao.silva@example.com",
+            roles = setOf("ROLE_USER"),
+            createdAt = "2026-01-01T00:00:00",
+            updatedAt = "2026-01-01T00:00:00"
+        )
+        every { securityUtils.getCurrentUserId() } returns userId
+        every { userService.getUserById(userId) } returns userResponse
+
+        // Act
+        val response = authController.me()
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(userId, response.body?.id)
+        assertEquals("João Silva", response.body?.name)
+        assertEquals("joao.silva@example.com", response.body?.email)
+        assertEquals(setOf("ROLE_USER"), response.body?.roles)
+        verify(exactly = 1) { securityUtils.getCurrentUserId() }
+        verify(exactly = 1) { userService.getUserById(userId) }
+    }
+}
