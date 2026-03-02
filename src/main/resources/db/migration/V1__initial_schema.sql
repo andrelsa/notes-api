@@ -4,6 +4,10 @@
 -- Descrição: Criação das tabelas base users, refresh_tokens e notes
 -- =========================================
 
+-- Habilitar extensão pg_trgm para suporte a índices GIN com ILIKE
+-- Necessário para os índices de busca por nome e título
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- 1. Tabela de usuários
 -- Nota: a constraint UNIQUE em email já cria um índice implícito no PostgreSQL
 CREATE TABLE IF NOT EXISTS users (
@@ -14,6 +18,10 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP           NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP           NOT NULL DEFAULT NOW()
 );
+
+-- Índice GIN trigram em users.name para suportar buscas com ILIKE (%nome%)
+-- Utilizado por: findByNameContainingIgnoreCase
+CREATE INDEX IF NOT EXISTS idx_users_name_trgm ON users USING gin(name gin_trgm_ops);
 
 -- 2. Tabela de refresh tokens
 -- Nota: a constraint UNIQUE em token já cria um índice implícito no PostgreSQL
@@ -41,5 +49,9 @@ CREATE TABLE IF NOT EXISTS notes (
 );
 
 CREATE INDEX IF NOT EXISTS idx_notes_user_id ON notes(user_id);
-CREATE INDEX IF NOT EXISTS idx_notes_title   ON notes USING gin(to_tsvector('portuguese', title));
 
+-- Índice GIN trigram em notes.title para suportar buscas com ILIKE (%título%)
+-- Utilizado por: findByTitleContainingIgnoreCase e findByUserIdAndTitleContainingIgnoreCase
+-- Nota: GIN tsvector ('to_tsvector') foi descartado pois só funciona com operador @@
+--       e as queries do repositório usam ILIKE, que requer pg_trgm
+CREATE INDEX IF NOT EXISTS idx_notes_title_trgm ON notes USING gin(title gin_trgm_ops);
