@@ -5,6 +5,7 @@
 -- =========================================
 
 -- 1. Tabela de usuários
+-- Nota: a constraint UNIQUE em email já cria um índice implícito no PostgreSQL
 CREATE TABLE IF NOT EXISTS users (
     id         BIGSERIAL PRIMARY KEY,
     name       VARCHAR(255)        NOT NULL,
@@ -14,9 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP           NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-
 -- 2. Tabela de refresh tokens
+-- Nota: a constraint UNIQUE em token já cria um índice implícito no PostgreSQL
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id         BIGSERIAL PRIMARY KEY,
     token      VARCHAR(512)        NOT NULL UNIQUE,
@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     CONSTRAINT fk_refresh_tokens_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token   ON refresh_tokens(token);
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 
 -- 3. Tabela de notas
