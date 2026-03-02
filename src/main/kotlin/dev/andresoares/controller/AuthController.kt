@@ -1,20 +1,19 @@
 package dev.andresoares.controller
 
 import dev.andresoares.dto.*
-import dev.andresoares.security.SecurityUtils
+import dev.andresoares.exception.UnauthorizedException
+import dev.andresoares.security.AuthenticatedUser
 import dev.andresoares.service.AuthService
-import dev.andresoares.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(
-    private val authService: AuthService,
-    private val userService: UserService,
-    private val securityUtils: SecurityUtils
+    private val authService: AuthService
 ) {
 
     /**
@@ -51,19 +50,22 @@ class AuthController(
      * Retorna o perfil do usuário autenticado.
      * GET /api/v1/auth/me
      *
-     * Útil para o frontend verificar quem está logado e quais roles possui.
+     * Lê diretamente do AuthenticatedUser no SecurityContext —
+     * zero queries adicionais ao banco de dados.
      */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     fun me(): ResponseEntity<UserInfo> {
-        val userId = securityUtils.getCurrentUserId()
-        val userResponse = userService.getUserById(userId)
-        val userInfo = UserInfo(
-            id = userResponse.id,
-            name = userResponse.name,
-            email = userResponse.email,
-            roles = userResponse.roles
+        val principal = SecurityContextHolder.getContext().authentication?.principal as? AuthenticatedUser
+            ?: throw UnauthorizedException("No authenticated user found")
+
+        return ResponseEntity.ok(
+            UserInfo(
+                id = principal.id,
+                name = principal.name,
+                email = principal.email,
+                roles = principal.authorities.map { it.authority }.toSet()
+            )
         )
-        return ResponseEntity.ok(userInfo)
     }
 }

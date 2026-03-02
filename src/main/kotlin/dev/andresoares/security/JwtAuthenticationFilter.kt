@@ -26,12 +26,15 @@ class JwtAuthenticationFilter(
 
             if (jwt != null && jwtTokenProvider.validateToken(jwt) && jwtTokenProvider.isAccessToken(jwt)) {
                 val userId = jwtTokenProvider.getUserIdFromToken(jwt)
-                val userDetails = userDetailsService.loadUserById(userId)
+
+                // Uma única query ao banco: carrega id, email, name e roles no AuthenticatedUser.
+                // SecurityUtils e controllers reutilizam esse principal sem queries adicionais.
+                val authenticatedUser = userDetailsService.loadUserById(userId)
 
                 val authentication = UsernamePasswordAuthenticationToken(
-                    userDetails,
+                    authenticatedUser,
                     null,
-                    userDetails.authorities
+                    authenticatedUser.authorities
                 )
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 

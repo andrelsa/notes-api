@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface NoteRepository : JpaRepository<Note, Long> {
     fun findByTitleContainingIgnoreCase(title: String): List<Note>
-
-    // Spring Data JPA underscore notation to navigate ManyToOne: note.user.id
     fun findByUserId(userId: Long, pageable: Pageable): Page<Note>
     fun findByUserIdAndTitleContainingIgnoreCase(userId: Long, title: String): List<Note>
 }
