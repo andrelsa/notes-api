@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notesdb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop  # Testes criam e destroem o schema automaticamente
+    show-sql: false
+  flyway:
+    enabled: false  # Flyway desabilitado nos testes — Hibernate gerencia o schema via create-drop
