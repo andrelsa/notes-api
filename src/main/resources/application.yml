@@ -11,11 +11,13 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: validate   # Flyway gerencia o schema — Hibernate apenas valida
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true  # Necessário para bancos já existentes antes do Flyway
+    baseline-version: 0
   jackson:
     serialization:
       indent-output: true

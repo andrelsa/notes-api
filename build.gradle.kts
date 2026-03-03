@@ -32,6 +32,9 @@ dependencies {
 
     // Database
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
+    // Flyway 9.x (gerenciado pelo Spring Boot BOM): suporte a PostgreSQL já incluso no flyway-core
+    implementation("org.flywaydb:flyway-core")
 
     // Development
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -41,9 +44,6 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation(kotlin("test"))
     testImplementation("io.mockk:mockk:1.13.8")
-
-    // PostgreSQL
-    runtimeOnly("org.postgresql:postgresql")
 }
 
 tasks.test {

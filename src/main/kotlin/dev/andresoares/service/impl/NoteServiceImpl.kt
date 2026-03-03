@@ -22,14 +22,17 @@ class NoteServiceImpl(
     private val securityUtils: SecurityUtils
 ) : NoteService {
 
+    @Transactional(readOnly = true)
     override fun getAllNotes(): List<NoteResponse> {
         return noteRepository.findAll().map { it.toResponse() }
     }
 
+    @Transactional(readOnly = true)
     override fun getAllNotes(pageable: Pageable): Page<NoteResponse> {
         return noteRepository.findAll(pageable).map { it.toResponse() }
     }
 
+    @Transactional(readOnly = true)
     override fun getNoteById(id: Long): NoteResponse {
         val note = noteRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Note not found with id: $id") }
@@ -47,6 +50,7 @@ class NoteServiceImpl(
         return note.toResponse()
     }
 
+    @Transactional(readOnly = true)
     override fun searchNotesByTitle(title: String): List<NoteResponse> {
         // ADMIN e MANAGER podem buscar em todas as notas
         if (securityUtils.isAdmin() || securityUtils.isManager()) {
@@ -113,11 +117,13 @@ class NoteServiceImpl(
         noteRepository.deleteById(id)
     }
 
+    @Transactional(readOnly = true)
     override fun getMyNotes(pageable: Pageable): Page<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
         return noteRepository.findByUserId(currentUserId, pageable).map { it.toResponse() }
     }
 
+    @Transactional(readOnly = true)
     override fun searchMyNotesByTitle(title: String): List<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
         return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)

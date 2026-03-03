@@ -1,9 +1,13 @@
 package dev.andresoares.controller
 
 import dev.andresoares.dto.*
+import dev.andresoares.exception.UnauthorizedException
+import dev.andresoares.security.AuthenticatedUser
 import dev.andresoares.service.AuthService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -40,5 +44,28 @@ class AuthController(
     fun logout(@Valid @RequestBody request: LogoutRequest): ResponseEntity<MessageResponse> {
         val response = authService.logout(request)
         return ResponseEntity.ok(response)
+    }
+
+    /**
+     * Retorna o perfil do usuário autenticado.
+     * GET /api/v1/auth/me
+     *
+     * Lê diretamente do AuthenticatedUser no SecurityContext —
+     * zero queries adicionais ao banco de dados.
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    fun me(): ResponseEntity<UserInfo> {
+        val principal = SecurityContextHolder.getContext().authentication?.principal as? AuthenticatedUser
+            ?: throw UnauthorizedException("No authenticated user found")
+
+        return ResponseEntity.ok(
+            UserInfo(
+                id = principal.id,
+                name = principal.name,
+                email = principal.email,
+                roles = principal.authorities.map { it.authority }.toSet()
+            )
+        )
     }
 }

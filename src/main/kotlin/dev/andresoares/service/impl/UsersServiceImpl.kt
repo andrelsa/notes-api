@@ -23,20 +23,24 @@ class UserServiceImpl(
     private val securityUtils: SecurityUtils
 ) : UserService {
 
+    @Transactional(readOnly = true)
     override fun getAllUsers(): List<UserResponse> {
         return userRepository.findAll().map { it.toResponse() }
     }
 
+    @Transactional(readOnly = true)
     override fun getAllUsers(pageable: Pageable): Page<UserResponse> {
         return userRepository.findAll(pageable).map { it.toResponse() }
     }
 
+    @Transactional(readOnly = true)
     override fun getUserById(id: Long): UserResponse {
         val user = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User not found with id: $id") }
         return user.toResponse()
     }
 
+    @Transactional(readOnly = true)
     override fun searchUsersByName(name: String): List<UserResponse> {
         return userRepository.findByNameContainingIgnoreCase(name).map { it.toResponse() }
     }
