@@ -453,5 +453,55 @@ class AuthControllerIntegrationTest {
         assertTrue(oldToken.isPresent, "Old refresh token should exist in database")
         assertTrue(oldToken.get().revoked, "Old refresh token should be revoked")
     }
-}
 
+    @Test
+    fun `should return 401 when calling me endpoint without token`() {
+        // Chamada sem Authorization header — filter chain deve retornar 401
+        // (não 403, que seria o comportamento errado de method-level AccessDenied)
+        mockMvc.perform(get("/api/v1/auth/me"))
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    fun `should return 401 when calling me endpoint with invalid token`() {
+        mockMvc.perform(
+            get("/api/v1/auth/me")
+                .header("Authorization", "Bearer invalid.token.here")
+        )
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    fun `should return user profile when calling me endpoint with valid token`() {
+        val user = User(
+            name = "João Silva",
+            email = "joao.silva@example.com",
+            password = passwordEncoder.encode("Senh@123456"),
+            roles = mutableSetOf("ROLE_USER")
+        )
+        userRepository.save(user)
+
+        // Fazer login para obter access token
+        val loginRequest = LoginRequest(email = "joao.silva@example.com", password = "Senh@123456")
+        val loginResult = mockMvc.perform(
+            post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+        )
+            .andExpect(status().isOk)
+            .andReturn()
+
+        val loginResponse = objectMapper.readTree(loginResult.response.contentAsString)
+        val accessToken = loginResponse.get("accessToken").asText()
+
+        // Chamar /me com o token — deve retornar o perfil do usuário autenticado
+        mockMvc.perform(
+            get("/api/v1/auth/me")
+                .header("Authorization", "Bearer $accessToken")
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
+            .andExpect(jsonPath("$.name").value("João Silva"))
+            .andExpect(jsonPath("$.roles").isArray)
+    }
+}

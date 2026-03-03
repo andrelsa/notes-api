@@ -34,8 +34,13 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth
-                    // Endpoints públicos (não requerem autenticação)
-                    .requestMatchers("/api/v1/auth/**").permitAll()
+                    // Endpoints públicos de autenticação (não requerem token)
+                    // NOTA: /api/v1/auth/me é excluído intencionalmente — requer autenticação.
+                    // Usar /api/v1/auth/** causaria 403 (method-level) ao invés de 401
+                    // para chamadas sem token, pois o filter chain não desafiaria a requisição.
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll() // Registro de usuário
                     .requestMatchers("/h2-console/**").permitAll() // Console H2 para dev
                     .requestMatchers("/error").permitAll()
