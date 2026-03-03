@@ -18,7 +18,7 @@ data class User(
 
     @field:NotBlank(message = "Email is required")
     @field:Email(message = "Invalid email format")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 255)
     var email: String,
 
     @field:NotBlank(message = "Password is required")
