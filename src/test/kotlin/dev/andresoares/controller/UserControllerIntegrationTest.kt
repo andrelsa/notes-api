@@ -360,7 +360,7 @@ class UserControllerIntegrationTest {
 
         mockMvc.perform(get("/api/v1/users?name=João"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$.content.length()").value(2))
     }
 
     @Test
@@ -377,7 +377,7 @@ class UserControllerIntegrationTest {
 
         mockMvc.perform(get("/api/v1/users?name=Inexistente"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(0))
+            .andExpect(jsonPath("$.content.length()").value(0))
     }
 
     @Test

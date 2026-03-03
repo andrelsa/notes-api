@@ -39,19 +39,11 @@ class UserController(private val userService: UserService) {
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(defaultValue = "id") sortBy: String,
         @RequestParam(defaultValue = "asc") direction: String
-    ): ResponseEntity<*> {
-        if (name != null) {
-            val users = userService.searchUsersByName(name)
-            return ResponseEntity.ok(users)
-        }
-
-        val sortDirection = if (direction.equals("desc", ignoreCase = true)) {
-            Sort.Direction.DESC
-        } else {
-            Sort.Direction.ASC
-        }
+    ): ResponseEntity<Page<UserResponse>> {
+        val sortDirection = if (direction.equals("desc", ignoreCase = true)) Sort.Direction.DESC else Sort.Direction.ASC
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy))
-        val usersPage: Page<UserResponse> = userService.getAllUsers(pageable)
+        val usersPage = if (name != null) userService.searchUsersByName(name, pageable)
+                        else userService.getAllUsers(pageable)
         return ResponseEntity.ok(usersPage)
     }
 

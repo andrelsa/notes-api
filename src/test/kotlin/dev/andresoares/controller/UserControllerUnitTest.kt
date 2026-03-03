@@ -60,17 +60,18 @@ class UserControllerUnitTest {
     fun `getAllUsers deve buscar usuarios por nome quando filtro e fornecido`() {
         // Arrange
         val name = "João"
-        val expectedUsers = listOf(
+        val userList = listOf(
             UserResponse(1L, "João Silva", "joao@example.com", setOf("ROLE_USER"), "2026-02-03T10:00:00", "2026-02-03T10:00:00")
         )
-        every { userService.searchUsersByName(name) } returns expectedUsers
+        val expectedPage = PageImpl(userList)
+        every { userService.searchUsersByName(name, any()) } returns expectedPage
 
         // Act
         val response = userController.getAllUsers(name, 0, 20, "id", "asc")
 
         // Assert
         assertEquals(HttpStatus.OK, response.statusCode)
-        verify(exactly = 1) { userService.searchUsersByName(name) }
+        verify(exactly = 1) { userService.searchUsersByName(name, any()) }
     }
 
     @Test

@@ -180,10 +180,10 @@ class NoteControllerIntegrationTest {
             )
         }
 
-        // ADMIN can search across all notes
+        // ADMIN can search across all notes — response is now Page, content in $.content
         mockMvc.perform(get("/api/v1/notes?title=Spring"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$.content.length()").value(2))
     }
 
     @Test
@@ -202,10 +202,10 @@ class NoteControllerIntegrationTest {
             )
         }
 
-        // USER searches only in their own notes via /me endpoint
+        // USER searches only in their own notes via /me endpoint — response is now Page
         mockMvc.perform(get("/api/v1/notes/me?title=Spring"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$.content.length()").value(2))
     }
 
     @Test

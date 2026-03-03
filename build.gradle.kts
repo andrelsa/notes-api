@@ -36,6 +36,9 @@ dependencies {
     // Flyway 9.x (gerenciado pelo Spring Boot BOM): suporte a PostgreSQL já incluso no flyway-core
     implementation("org.flywaydb:flyway-core")
 
+    // OpenAPI / Swagger UI
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+
     // Development
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 

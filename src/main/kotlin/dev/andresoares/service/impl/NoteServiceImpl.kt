@@ -52,13 +52,21 @@ class NoteServiceImpl(
 
     @Transactional(readOnly = true)
     override fun searchNotesByTitle(title: String): List<NoteResponse> {
-        // ADMIN e MANAGER podem buscar em todas as notas
         if (securityUtils.isAdmin() || securityUtils.isManager()) {
             return noteRepository.findByTitleContainingIgnoreCase(title).map { it.toResponse() }
         }
-        // USER e VIEWER buscam apenas nas suas próprias notas
         val currentUserId = securityUtils.getCurrentUserId()
         return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)
+            .map { it.toResponse() }
+    }
+
+    @Transactional(readOnly = true)
+    override fun searchNotesByTitle(title: String, pageable: Pageable): Page<NoteResponse> {
+        if (securityUtils.isAdmin() || securityUtils.isManager()) {
+            return noteRepository.findByTitleContainingIgnoreCase(title, pageable).map { it.toResponse() }
+        }
+        val currentUserId = securityUtils.getCurrentUserId()
+        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title, pageable)
             .map { it.toResponse() }
     }
 
@@ -127,6 +135,13 @@ class NoteServiceImpl(
     override fun searchMyNotesByTitle(title: String): List<NoteResponse> {
         val currentUserId = securityUtils.getCurrentUserId()
         return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title)
+            .map { it.toResponse() }
+    }
+
+    @Transactional(readOnly = true)
+    override fun searchMyNotesByTitle(title: String, pageable: Pageable): Page<NoteResponse> {
+        val currentUserId = securityUtils.getCurrentUserId()
+        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(currentUserId, title, pageable)
             .map { it.toResponse() }
     }
 

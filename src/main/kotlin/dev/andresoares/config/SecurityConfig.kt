@@ -42,8 +42,15 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll() // Registro de usuário
-                    .requestMatchers("/h2-console/**").permitAll() // Console H2 para dev
+                    .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/error").permitAll()
+                    // Swagger / OpenAPI
+                    .requestMatchers(
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/api-docs",
+                        "/api-docs/**"
+                    ).permitAll()
 
                     // Endpoints administrativos (requerem ROLE_ADMIN)
                     .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

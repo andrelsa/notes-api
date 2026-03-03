@@ -40,26 +40,14 @@ class NoteController(private val noteService: NoteService) {
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(defaultValue = "id") sortBy: String,
         @RequestParam(defaultValue = "asc") direction: String
-    ): ResponseEntity<*> {
-        if (title != null) {
-            val notes = noteService.searchNotesByTitle(title)
-            return ResponseEntity.ok(notes)
-        }
-
-        val sortDirection = if (direction.equals("desc", ignoreCase = true)) {
-            Sort.Direction.DESC
-        } else {
-            Sort.Direction.ASC
-        }
+    ): ResponseEntity<Page<NoteResponse>> {
+        val sortDirection = if (direction.equals("desc", ignoreCase = true)) Sort.Direction.DESC else Sort.Direction.ASC
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy))
-        val notesPage: Page<NoteResponse> = noteService.getAllNotes(pageable)
+        val notesPage = if (title != null) noteService.searchNotesByTitle(title, pageable)
+                        else noteService.getAllNotes(pageable)
         return ResponseEntity.ok(notesPage)
     }
 
-    /**
-     * Lista as notas do usuário autenticado.
-     * Qualquer usuário autenticado pode acessar suas próprias notas.
-     */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     fun getMyNotes(
@@ -68,19 +56,11 @@ class NoteController(private val noteService: NoteService) {
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(defaultValue = "id") sortBy: String,
         @RequestParam(defaultValue = "asc") direction: String
-    ): ResponseEntity<*> {
-        if (title != null) {
-            val notes = noteService.searchMyNotesByTitle(title)
-            return ResponseEntity.ok(notes)
-        }
-
-        val sortDirection = if (direction.equals("desc", ignoreCase = true)) {
-            Sort.Direction.DESC
-        } else {
-            Sort.Direction.ASC
-        }
+    ): ResponseEntity<Page<NoteResponse>> {
+        val sortDirection = if (direction.equals("desc", ignoreCase = true)) Sort.Direction.DESC else Sort.Direction.ASC
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy))
-        val notesPage: Page<NoteResponse> = noteService.getMyNotes(pageable)
+        val notesPage = if (title != null) noteService.searchMyNotesByTitle(title, pageable)
+                        else noteService.getMyNotes(pageable)
         return ResponseEntity.ok(notesPage)
     }
 

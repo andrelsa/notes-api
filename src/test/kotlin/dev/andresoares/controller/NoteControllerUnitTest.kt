@@ -60,17 +60,18 @@ class NoteControllerUnitTest {
     fun `getAllNotes deve buscar por titulo quando filtro e fornecido`() {
         // Arrange
         val title = "Reunião"
-        val expectedNotes = listOf(
+        val noteList = listOf(
             NoteResponse(1L, "Reunião Sprint", "Conteúdo", null, "2026-01-30T10:00:00", "2026-01-30T10:00:00")
         )
-        every { NoteService.searchNotesByTitle(title) } returns expectedNotes
+        val expectedPage = PageImpl(noteList)
+        every { NoteService.searchNotesByTitle(title, any()) } returns expectedPage
 
         // Act
         val response = noteController.getAllNotes(title, 0, 20, "id", "asc")
 
         // Assert
         assertEquals(HttpStatus.OK, response.statusCode)
-        verify(exactly = 1) { NoteService.searchNotesByTitle(title) }
+        verify(exactly = 1) { NoteService.searchNotesByTitle(title, any()) }
     }
 
     @Test

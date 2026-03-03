@@ -45,6 +45,11 @@ class UserServiceImpl(
         return userRepository.findByNameContainingIgnoreCase(name).map { it.toResponse() }
     }
 
+    @Transactional(readOnly = true)
+    override fun searchUsersByName(name: String, pageable: Pageable): Page<UserResponse> {
+        return userRepository.findByNameContainingIgnoreCase(name, pageable).map { it.toResponse() }
+    }
+
     @Transactional
     override fun createUser(request: UserCreateRequest): UserResponse {
         // A validação @NotNull garante que name, email e password não serão null aqui

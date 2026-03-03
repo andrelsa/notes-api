@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface NoteRepository : JpaRepository<Note, Long> {
     fun findByTitleContainingIgnoreCase(title: String): List<Note>
+    fun findByTitleContainingIgnoreCase(title: String, pageable: Pageable): Page<Note>
+
     fun findByUserId(userId: Long, pageable: Pageable): Page<Note>
     fun findByUserIdAndTitleContainingIgnoreCase(userId: Long, title: String): List<Note>
+    fun findByUserIdAndTitleContainingIgnoreCase(userId: Long, title: String, pageable: Pageable): Page<Note>
 }

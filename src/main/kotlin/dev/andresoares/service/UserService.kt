@@ -46,6 +46,14 @@ interface UserService {
     fun searchUsersByName(name: String): List<UserResponse>
 
     /**
+     * Busca usuários por nome com paginação (case-insensitive).
+     * @param name Texto para busca no nome do usuário
+     * @param pageable Configurações de paginação e ordenação
+     * @return Página de usuários que contêm o nome buscado
+     */
+    fun searchUsersByName(name: String, pageable: Pageable): Page<UserResponse>
+
+    /**
      * Cria um usuário.
      * @param request Dados para criação do usuário
      * @return Usuário criado em formato DTO

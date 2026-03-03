@@ -31,3 +31,18 @@ jwt:
   access-token-expiration: 3600000    # 1 hora em milissegundos
   refresh-token-expiration: 604800000 # 7 dias em milissegundos
 
+# Scheduler de limpeza de tokens
+app:
+  scheduler:
+    token-cleanup:
+      cron: "0 0 2 * * *"  # Todos os dias às 02:00
+
+# Swagger / OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+

@@ -52,6 +52,14 @@ interface NoteService {
     fun searchNotesByTitle(title: String): List<NoteResponse>
 
     /**
+     * Busca notas por título com paginação (case-insensitive).
+     * @param title Texto para busca no título
+     * @param pageable Configurações de paginação e ordenação
+     * @return Página de notas que contêm o título buscado
+     */
+    fun searchNotesByTitle(title: String, pageable: Pageable): Page<NoteResponse>
+
+    /**
      * Cria uma nova nota associada ao usuário autenticado.
      * @param request Dados para criação da nota
      * @return Nota criada em formato DTO
@@ -82,6 +90,14 @@ interface NoteService {
      * @return Página de notas do usuário em formato DTO
      */
     fun getMyNotes(pageable: Pageable): Page<NoteResponse>
+
+    /**
+     * Retorna todas as notas do usuário autenticado por título com paginação (case-insensitive).
+     * @param title Texto para busca no título
+     * @param pageable Configurações de paginação e ordenação
+     * @return Página de notas do usuário que contêm o título buscado
+     */
+    fun searchMyNotesByTitle(title: String, pageable: Pageable): Page<NoteResponse>
 
     /**
      * Retorna todas as notas do usuário autenticado por título (case-insensitive).
