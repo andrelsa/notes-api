@@ -248,9 +248,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/notes",
+              "raw": "{{baseUrl}}/api/v1/notes",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes"]
+              "path": ["api", "v1", "notes"]
             },
             "description": "Retrieve all notes from the database.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
@@ -268,9 +268,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/notes?title=Spring",
+              "raw": "{{baseUrl}}/api/v1/notes?title=Spring",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes"],
+              "path": ["api", "v1", "notes"],
               "query": [
                 {
                   "key": "title",
@@ -295,9 +295,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "raw": "{{baseUrl}}/api/v1/notes/{{noteId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes", "{{noteId}}"]
+              "path": ["api", "v1", "notes", "{{noteId}}"]
             },
             "description": "Retrieve a specific note by its ID.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
@@ -323,9 +323,9 @@
               "raw": "{\n  \"title\": \"Minha Primeira Nota\",\n  \"content\": \"Este é o conteúdo da minha nota de exemplo\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes",
+              "raw": "{{baseUrl}}/api/v1/notes",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes"]
+              "path": ["api", "v1", "notes"]
             },
             "description": "Create a new note. Title is required, content is optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
@@ -351,9 +351,9 @@
               "raw": "{\n  \"title\": \"Título Atualizado\",\n  \"content\": \"Conteúdo atualizado da nota\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "raw": "{{baseUrl}}/api/v1/notes/{{noteId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes", "{{noteId}}"]
+              "path": ["api", "v1", "notes", "{{noteId}}"]
             },
             "description": "Update an existing note. Both title and content are optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
@@ -371,9 +371,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/notes/{{noteId}}",
+              "raw": "{{baseUrl}}/api/v1/notes/{{noteId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes", "{{noteId}}"]
+              "path": ["api", "v1", "notes", "{{noteId}}"]
             },
             "description": "Delete a note by its ID.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
@@ -549,9 +549,9 @@
               "raw": "{\n  \"title\": \"Título Obrigatório\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes",
+              "raw": "{{baseUrl}}/api/v1/notes",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes"]
+              "path": ["api", "v1", "notes"]
             },
             "description": "Create a note with only the required title field.\n\n**Authentication Required:** Yes"
           },
@@ -577,9 +577,9 @@
               "raw": "{\n  \"title\": \"Spring Boot Tutorial\",\n  \"content\": \"Spring Boot é um framework Java que facilita a criação de aplicações standalone e production-ready. Este tutorial cobre os conceitos básicos, incluindo:\n\n1. Configuração do projeto\n2. Criação de REST APIs\n3. Integração com banco de dados\n4. Validação de dados\n5. Tratamento de exceções\n\nPara mais informações, visite: https://spring.io/projects/spring-boot\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes",
+              "raw": "{{baseUrl}}/api/v1/notes",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes"]
+              "path": ["api", "v1", "notes"]
             },
             "description": "Create a note with both title and content.\n\n**Authentication Required:** Yes"
           },
@@ -605,9 +605,9 @@
               "raw": "{\n  \"title\": \"Novo Título\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes/1",
+              "raw": "{{baseUrl}}/api/v1/notes/1",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes", "1"]
+              "path": ["api", "v1", "notes", "1"]
             },
             "description": "Update only the title of a note.\n\n**Authentication Required:** Yes"
           },
@@ -633,9 +633,9 @@
               "raw": "{\n  \"title\": \"\",\n  \"content\": \"Conteúdo sem título\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/notes",
+              "raw": "{{baseUrl}}/api/v1/notes",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes"]
+              "path": ["api", "v1", "notes"]
             },
             "description": "Example of validation error - title cannot be blank.\n\n**Authentication Required:** Yes"
           },
@@ -653,9 +653,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/notes/99999",
+              "raw": "{{baseUrl}}/api/v1/notes/99999",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "notes", "99999"]
+              "path": ["api", "v1", "notes", "99999"]
             },
             "description": "Example of 404 Not Found error.\n\n**Authentication Required:** Yes"
           },
