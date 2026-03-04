@@ -478,7 +478,7 @@
         {
           "name": "Update User",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -495,9 +495,9 @@
               "raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.novo@example.com\",\n  \"password\": \"novaSenha123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}"]
+              "path": ["api", "v1", "users", "{{userId}}"]
             },
             "description": "Update an existing user. All fields are optional.\n\n**Authentication Required:** Yes - JWT token required in Authorization header."
           },
